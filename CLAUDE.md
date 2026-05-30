@@ -106,12 +106,13 @@ All mascots are **round, soft, expressive illustrated potato characters**. Same 
 ---
 
 ## Tech Stack
-*(Update this section once stack is confirmed in first session)*
 
-- Framework: TBD
-- Styling: TBD
-- Hosting: TBD
-- Notes: must be beginner-friendly, mobile-first, scalable
+- Framework: Astro v6 — static site, component-based, zero JS by default
+- Styling: Plain CSS with design tokens in `src/styles/global.css` — no Tailwind
+- Fonts: Cormorant Garamond (headings) + DM Sans (body) via Google Fonts
+- Hosting: Netlify — auto-deploys from GitHub on every push
+- Repo: GitHub (private), connected to Netlify
+- Node: v22
 
 ---
 
@@ -149,22 +150,48 @@ All mascots are **round, soft, expressive illustrated potato characters**. Same 
 - Footer component — simple, warm — session 4
 - Instagram links — linked in footer/nav — session 4
 - Connector portal colour updated — changed from cream-dark to mint-pale (#DFF2E6) to distinguish from background — session 4
+- Dubai mascot hub pages built — /dubai/anchor, /dubai/explorer, /dubai/connector — session 5
+- City routing fixed — Dubai city page portals now link to Dubai-specific mascot pages, not generic London ones — session 5
+- MascotPage globe fixed — city pins now route to same mascot on the clicked city (e.g. London pin on Dubai Anchor → /anchor) — session 5
+- Interactive D3 globe attempted — cobe and D3 approaches both rendered black; root cause is CDN/bundler environment issue, parked for now — session 5
+- CSS globe restored with both London + Dubai pins — pure CSS, guaranteed to work everywhere — session 5
+- PlaceCard redesigned — warm cream-dark background, no shadow, no pill tags (now dot-separated plain text), larger padding — session 5
+- PartnerCard redesigned — same cream-dark treatment as PlaceCard for consistency — session 5
+- Guide header redesigned — title smaller (max 30px), mascot smaller + softer, gradient fade from header colour into cream body — session 5
+- Deployed to Netlify — site is live, auto-deploys on every GitHub push — session 5
 
 ### In Progress
-*(note what you were working on when the session ended)*
+*(nothing — clean end to session 5)*
 
-### Next Up
-- Newsletter signup placeholder (homepage section)
-- Category pages (e.g. /explorer/cafes, /explorer/markets) — content to be added over time
-- More Dubai Explorer + Connector content
-- Third city (Lisbon is strong candidate)
+### Next Up — Priority Order
+
+**Quick wins (next session):**
+- Newsletter signup section on homepage — placeholder form, warm design, no back-end needed yet
+- /explorer/markets page — content, same format as /explorer/cafes
+- Fix the interactive globe — now that the site is deployed, test if the D3 CDN approach works on the live URL; if not, investigate why and try a simpler WebGL fallback
+
+**Content to write:**
+- Dubai Explorer guides: neighbourhoods, cafés/brunch, desert & outdoors
+- Dubai Connector guides: expat communities, events & meetups
+- London Connector content — /connector has no guides yet
+- More London Explorer pages — parks, hidden gems
+
+**Bigger features (future sessions):**
+- Third city — Lisbon is the strongest candidate (D7 visa, NHR, enormous expat community, fits brand perfectly)
+- Newsletter back-end — connect to Mailchimp or similar when ready
+- Custom domain — point a real domain at the Netlify deployment
+- SEO basics — add og:image, sitemap, meta descriptions per page
+- Instagram feed or social proof section on homepage
 
 ### Decisions Made
 - Framework: Astro v6 (static, fast, beginner-friendly, component-based)
 - Styling: plain CSS with design tokens in src/styles/global.css — no Tailwind, no CSS-in-JS
 - Mascot naming: "The Anchor" (not "The Settler") for settling/relocation guide
-- Globe: CSS-only animated grid sphere for MVP; add new cities by editing the cities[] array in MapSection.astro
-- Mascot images: SVG placeholders inline for now; swap with real PNGs in public/mascots/ when ready
+- Globe: CSS-only animated grid sphere is the stable choice for MVP; interactive D3/WebGL globe is aspirational — revisit once deployed site can be tested properly
+- Mascot images: real PNGs in public/mascots/ — all loaded and working
+- Routing: city-first then mascot (/dubai → /dubai/anchor); London mascot pages live at /anchor etc. not /london/anchor
+- Cards: cream-dark background (#E3DBCE), no box-shadow, generous padding (space-8 / space-10)
+- Hosting: Netlify, connected to GitHub, auto-deploy on push
 
 ---
 
