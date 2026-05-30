@@ -1,0 +1,93 @@
+---
+// Nav.astro — top navigation bar
+---
+
+<nav class="nav">
+  <div class="nav__inner container">
+
+    <a href="/" class="nav__logo">
+      Landwell
+    </a>
+
+    <ul class="nav__links">
+      <li><a href="/#about">About</a></li>
+      <li>
+        <a href="https://www.instagram.com/land.well" target="_blank" rel="noopener">
+          Instagram
+        </a>
+      </li>
+      <li>
+        <a href="#join" class="nav__join">Join us</a>
+      </li>
+    </ul>
+
+  </div>
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding-block: var(--space-4);
+  }
+
+  .nav__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .nav__logo {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    color: var(--sage);
+    letter-spacing: 0.03em;
+    transition: opacity 0.2s;
+  }
+
+  .nav__logo:hover {
+    opacity: 0.75;
+  }
+
+  .nav__links {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    list-style: none;
+  }
+
+  .nav__links a {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    transition: color 0.2s;
+  }
+
+  .nav__links a:hover {
+    color: var(--sage);
+  }
+
+  .nav__join {
+    border: 1.5px solid var(--sage);
+    border-radius: var(--radius-full);
+    padding: var(--space-2) var(--space-5);
+    color: var(--sage) !important;
+    transition: background-color 0.2s, color 0.2s !important;
+  }
+
+  .nav__join:hover {
+    background-color: var(--sage);
+    color: var(--white) !important;
+  }
+
+  /* Hide links on very small screens */
+  @media (max-width: 500px) {
+    .nav__links {
+      display: none;
+    }
+  }
+</style>

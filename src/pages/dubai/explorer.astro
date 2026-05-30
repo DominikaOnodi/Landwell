@@ -1,0 +1,23 @@
+---
+import MascotPage from '../../layouts/MascotPage.astro';
+---
+
+<MascotPage
+  id="explorer"
+  name="The Explorer"
+  tagline="Discover Dubai."
+  image="/mascots/explorer.png"
+  imageAlt="The Explorer — a curious potato with a backpack and map"
+  bg="var(--sage-pale)"
+  city="Dubai"
+  categories={[
+    { label: "Neighbourhoods",    icon: "🌆", href: "#" },
+    { label: "Cafés & Brunch",    icon: "☕", href: "#" },
+    { label: "Restaurants",       icon: "🍽️", href: "#" },
+    { label: "Desert & Outdoors", icon: "🏜️", href: "#" },
+    { label: "Art & Culture",     icon: "🎨", href: "#" },
+    { label: "Markets & Souks",   icon: "🛍️", href: "#" },
+    { label: "Hidden Gems",       icon: "✨", href: "#" },
+    { label: "City Guides",       icon: "📖", href: "#" },
+  ]}
+/>

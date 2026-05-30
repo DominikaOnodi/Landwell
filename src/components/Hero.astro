@@ -1,0 +1,155 @@
+---
+// Hero.astro — full-height opening section
+---
+
+<section class="hero">
+
+  <!-- Decorative background sparkles -->
+  <span class="sparkle sparkle--tl" aria-hidden="true">✦</span>
+  <span class="sparkle sparkle--tr" aria-hidden="true">✦</span>
+  <span class="sparkle sparkle--bl" aria-hidden="true">✦</span>
+
+  <div class="hero__inner container">
+
+    <!-- Eyebrow label -->
+    <p class="hero__eyebrow">London · Community · Home ✦</p>
+
+    <!-- Arch icon (inspired by the Landwell logo) -->
+    <div class="hero__icon" aria-hidden="true">
+      <svg width="76" height="92" viewBox="0 0 76 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Sun glow -->
+        <circle cx="38" cy="46" r="24" fill="#C87941" fill-opacity="0.16"/>
+        <!-- Outer arch -->
+        <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84"
+              stroke="#3D5A40" stroke-width="2.5" fill="none"
+              stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- Arch fill -->
+        <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84 Z"
+              fill="#3D5A40" fill-opacity="0.05"/>
+        <!-- Inner door -->
+        <path d="M22 84 L22 46 C22 30 28 22 38 22 C48 22 54 30 54 46 L54 84"
+              stroke="#3D5A40" stroke-width="1.5" fill="none"
+              stroke-linecap="round" opacity="0.4"/>
+        <!-- Ground line -->
+        <line x1="4" y1="84" x2="72" y2="84"
+              stroke="#3D5A40" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+        <!-- Hill -->
+        <path d="M4 84 Q38 68 72 84"
+              stroke="#3D5A40" stroke-width="1.5" fill="none" opacity="0.3"/>
+        <!-- Path to door -->
+        <path d="M38 84 L38 80 M35 78 Q38 72 41 78"
+              stroke="#C87941" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+      </svg>
+    </div>
+
+    <!-- Headline -->
+    <h1 class="hero__headline">
+      A borderless community for people building life abroad.
+    </h1>
+
+  
+
+    <!-- CTAs -->
+    <div class="hero__cta">
+      <a href="#explore" class="btn btn-primary">Explore →</a>
+      <a href="#about" class="btn btn-outline">Learn more</a>
+    </div>
+
+    <!-- Scroll hint -->
+    <p class="hero__scroll" aria-hidden="true">· · ·</p>
+
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100svh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 120px var(--gutter) var(--space-20);
+    text-align: center;
+    background: radial-gradient(
+      ellipse 90% 70% at 50% 35%,
+      var(--cream-dark) 0%,
+      var(--cream) 65%
+    );
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero__inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .hero__eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    margin-bottom: var(--space-8);
+  }
+
+  .hero__icon {
+    margin-bottom: var(--space-8);
+    opacity: 0.9;
+  }
+
+  .hero__headline {
+    font-size: clamp(2.75rem, 7vw, 4.5rem);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.1;
+    margin-bottom: var(--space-6);
+    max-width: 14ch;
+  }
+
+  .hero__sub {
+    font-size: clamp(var(--text-base), 2vw, var(--text-lg));
+    color: var(--text-medium);
+    max-width: 46ch;
+    line-height: 1.7;
+    margin-bottom: var(--space-10);
+    margin-inline: auto;
+  }
+
+  .hero__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+
+  .hero__scroll {
+    margin-top: var(--space-16);
+    font-size: var(--text-lg);
+    color: var(--terracotta);
+    opacity: 0.4;
+    letter-spacing: 0.4em;
+  }
+
+  /* Decorative sparkles */
+  .sparkle {
+    position: absolute;
+    font-size: var(--text-sm);
+    color: var(--terracotta);
+    opacity: 0.3;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .sparkle--tl { top: 18%;  left:  8%; font-size: 1rem; }
+  .sparkle--tr { top: 22%;  right: 9%; font-size: 0.7rem; opacity: 0.2; }
+  .sparkle--bl { bottom: 20%; left: 12%; font-size: 0.65rem; opacity: 0.2; }
+
+  @media (min-width: 768px) {
+    .hero__headline {
+      max-width: none;
+    }
+  }
+</style>

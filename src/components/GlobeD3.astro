@@ -1,0 +1,466 @@
+---
+// GlobeD3.astro — Interactive D3 orthographic Earth globe
+// Uses CDN imports (is:inline) so Astro's bundler can't interfere.
+// navigatable=true  → click UK/UAE zooms + shows city card
+// navigatable=false → drag-only decoration
+
+interface Props {
+  navigatable?: boolean;
+}
+const { navigatable = true } = Astro.props;
+---
+
+<div class="gd-root" data-navigatable={String(navigatable)}>
+  <div class="gd-stage">
+    <svg
+      class="gd-svg"
+      viewBox="0 0 600 600"
+      xmlns="http://www.w3.org/2000/svg"
+      aria-label="Interactive world globe"
+      role="img"
+    >
+      <!-- Ocean visible immediately, even before JS runs -->
+      <circle class="gd-ocean-fallback" cx="300" cy="300" r="274"/>
+    </svg>
+  </div>
+  <div class="gd-card-slot" aria-live="polite"></div>
+</div>
+
+<script type="module" is:inline>
+import { geoOrthographic, geoPath, geoGraticule }
+  from 'https://cdn.jsdelivr.net/npm/d3-geo@3/+esm';
+import { interpolate }
+  from 'https://cdn.jsdelivr.net/npm/d3-interpolate@3/+esm';
+import { feature }
+  from 'https://cdn.jsdelivr.net/npm/topojson-client@3/+esm';
+
+(async () => {
+  // ── City data (ISO-3166 numeric IDs) ────────────────────────────────────
+  const CITIES = {
+    826: { name: 'London', country: 'United Kingdom',       href: '/london', center: [-1.5, 52]   },
+    784: { name: 'Dubai',  country: 'United Arab Emirates', href: '/dubai',  center: [54,   24.5]  },
+  };
+
+  const SIZE    = 600;
+  const BASE_SC = SIZE * 0.46;   // default zoom
+  const ZOOM_SC = SIZE * 0.78;   // zoomed-in scale
+  const NS      = 'http://www.w3.org/2000/svg';
+
+  // ── DOM ─────────────────────────────────────────────────────────────────
+  // Each .gd-root is independent — find the one that owns this script's SVG
+  const allRoots = [...document.querySelectorAll('.gd-root')];
+  // Pick the last one that doesn't have a data-globe-init attribute
+  const root = allRoots.find(el => !el.dataset.globeInit);
+  if (!root) return;
+  root.dataset.globeInit = '1';
+
+  const svg       = root.querySelector('.gd-svg');
+  const cardSlot  = root.querySelector('.gd-card-slot');
+  const canNav    = root.dataset.navigatable === 'true';
+
+  // ── Load world data ──────────────────────────────────────────────────────
+  let topology;
+  try {
+    topology = await fetch('/world-110m.json').then(r => r.json());
+  } catch (e) {
+    console.error('[GlobeD3] world data fetch failed:', e);
+    return;
+  }
+
+  const world = feature(topology, topology.objects.countries);
+
+  // ── Projection ───────────────────────────────────────────────────────────
+  const proj = geoOrthographic()
+    .scale(BASE_SC)
+    .translate([SIZE / 2, SIZE / 2])
+    .clipAngle(90)
+    .rotate([-15, -30, 0]);
+
+  const pathFn    = geoPath(proj);
+  const graticule = geoGraticule()();
+
+  // ── Helper: create SVG element ───────────────────────────────────────────
+  const el = (tag, cls) => {
+    const e = document.createElementNS(NS, tag);
+    if (cls) e.setAttribute('class', cls);
+    return e;
+  };
+
+  // Remove the fallback ocean circle (we'll draw it properly via D3)
+  svg.querySelector('.gd-ocean-fallback')?.remove();
+
+  // ── Build layers ─────────────────────────────────────────────────────────
+  const glowEl    = el('circle', 'gd-glow');
+  glowEl.setAttribute('cx', '300');
+  glowEl.setAttribute('cy', '300');
+  glowEl.setAttribute('r',  String(BASE_SC + 22));
+  svg.appendChild(glowEl);
+
+  const oceanEl   = el('path', 'gd-ocean');
+  svg.appendChild(oceanEl);
+
+  const gratEl    = el('path', 'gd-grat');
+  svg.appendChild(gratEl);
+
+  const landGroup = el('g');
+  svg.appendChild(landGroup);
+
+  world.features.forEach(feat => {
+    const id  = Number(feat.id);
+    const p   = el('path', CITIES[id] ? 'gd-country gd-country--active' : 'gd-country');
+    p.dataset.geoId = id;
+
+    if (CITIES[id] && canNav) {
+      p.style.cursor = 'pointer';
+      p.addEventListener('click', () => selectCity(id));
+      p.addEventListener('mouseenter', () => p.classList.add('gd-country--hover'));
+      p.addEventListener('mouseleave', () => p.classList.remove('gd-country--hover'));
+    }
+    landGroup.appendChild(p);
+  });
+
+  const markerGroup = el('g');
+  svg.appendChild(markerGroup);
+
+  Object.keys(CITIES).forEach(id => {
+    const pulse = el('circle', 'gd-marker-pulse');
+    pulse.setAttribute('r', '5');
+    pulse.dataset.mcity = id;
+    markerGroup.appendChild(pulse);
+
+    const dot = el('circle', 'gd-marker-dot');
+    dot.setAttribute('r', '5');
+    dot.dataset.mcity = id;
+    if (canNav) {
+      dot.style.cursor = 'pointer';
+      dot.addEventListener('click', () => selectCity(Number(id)));
+    }
+    markerGroup.appendChild(dot);
+  });
+
+  // ── Render ───────────────────────────────────────────────────────────────
+  function render() {
+    oceanEl.setAttribute('d', pathFn({ type: 'Sphere' }) || '');
+    gratEl.setAttribute('d',  pathFn(graticule) || '');
+
+    landGroup.querySelectorAll('[data-geo-id]').forEach(p => {
+      const feat = world.features.find(f => Number(f.id) === Number(p.dataset.geoId));
+      if (feat) p.setAttribute('d', pathFn(feat) || '');
+    });
+
+    Object.entries(CITIES).forEach(([id, city]) => {
+      const pt  = proj(city.center);
+      const vis = isVisible(...city.center);
+      markerGroup.querySelectorAll(`[data-mcity="${id}"]`).forEach(m => {
+        if (pt) { m.setAttribute('cx', pt[0]); m.setAttribute('cy', pt[1]); }
+        m.setAttribute('opacity', vis ? '1' : '0');
+      });
+    });
+  }
+
+  function isVisible(lon, lat) {
+    const [r0, r1] = proj.rotate();
+    const dLon = (lon + r0) * Math.PI / 180;
+    const latR  =  lat  * Math.PI / 180;
+    const r1R   =  r1   * Math.PI / 180;
+    return Math.acos(
+      Math.sin(-r1R) * Math.sin(latR) +
+      Math.cos(-r1R) * Math.cos(latR) * Math.cos(dLon)
+    ) < Math.PI / 2;
+  }
+
+  render();
+
+  // ── Auto-rotation ─────────────────────────────────────────────────────────
+  let spinning  = true;
+  let dragging  = false;
+  let animating = false;
+  let idleAt    = Date.now();
+
+  (function loop() {
+    if (spinning && !dragging && !animating && Date.now() - idleAt > 2500) {
+      const [r0, r1, r2] = proj.rotate();
+      proj.rotate([r0 + 0.12, r1, r2]);
+      render();
+    }
+    requestAnimationFrame(loop);
+  })();
+
+  // ── Drag ─────────────────────────────────────────────────────────────────
+  let dragStart = [0, 0];
+  let rotStart  = [0, 0, 0];
+
+  svg.style.cursor = 'grab';
+
+  svg.addEventListener('mousedown', e => {
+    if (e.target.classList.contains('gd-country--active') && canNav) return;
+    dragging  = true;
+    spinning  = false;
+    idleAt    = Date.now();
+    dragStart = [e.clientX, e.clientY];
+    rotStart  = [...proj.rotate()];
+    svg.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', e => {
+    if (!dragging) return;
+    proj.rotate([
+      rotStart[0] + (e.clientX - dragStart[0]) * 0.35,
+      Math.max(-80, Math.min(80, rotStart[1] - (e.clientY - dragStart[1]) * 0.35)),
+      0,
+    ]);
+    render();
+  });
+
+  window.addEventListener('mouseup', () => {
+    if (!dragging) return;
+    dragging = false;
+    svg.style.cursor = 'grab';
+    setTimeout(() => { spinning = true; }, 3000);
+  });
+
+  // Touch drag
+  let tStart = [0, 0];
+  let tRot   = [0, 0, 0];
+
+  svg.addEventListener('touchstart', e => {
+    tStart = [e.touches[0].clientX, e.touches[0].clientY];
+    tRot   = [...proj.rotate()];
+    spinning = false;
+  }, { passive: true });
+
+  svg.addEventListener('touchmove', e => {
+    proj.rotate([
+      tRot[0] + (e.touches[0].clientX - tStart[0]) * 0.35,
+      Math.max(-80, Math.min(80, tRot[1] - (e.touches[0].clientY - tStart[1]) * 0.35)),
+      0,
+    ]);
+    render();
+  }, { passive: true });
+
+  svg.addEventListener('touchend', () => {
+    setTimeout(() => { spinning = true; }, 3000);
+  }, { passive: true });
+
+  // ── Animation helper ──────────────────────────────────────────────────────
+  function eio(t) { return t < 0.5 ? 4*t*t*t : 1-Math.pow(-2*t+2,3)/2; }
+
+  function animateTo(targetRot, targetScale, ms, done) {
+    animating = true;
+    const r0 = [...proj.rotate()];
+    const s0 = proj.scale();
+    const ri = interpolate(r0, targetRot);
+    let t0 = null;
+    (function frame(ts) {
+      if (!t0) t0 = ts;
+      const raw = Math.min((ts - t0) / ms, 1);
+      const t   = eio(raw);
+      proj.rotate(ri(t));
+      proj.scale(s0 + (targetScale - s0) * t);
+      render();
+      if (raw < 1) requestAnimationFrame(frame);
+      else { animating = false; done?.(); }
+    })(performance.now());
+  }
+
+  // ── City select ───────────────────────────────────────────────────────────
+  function selectCity(id) {
+    if (animating) return;
+    const city = CITIES[id];
+    if (!city) return;
+    spinning = false;
+    animateTo([-city.center[0], -city.center[1], 0], ZOOM_SC, 950, () => showCard(city));
+  }
+
+  function showCard(city) {
+    cardSlot.innerHTML = `
+      <div class="gd-card">
+        <button class="gd-back-btn">← Back to globe</button>
+        <p class="gd-card__eyebrow">You're looking at</p>
+        <h3 class="gd-card__name">${city.name}</h3>
+        <p class="gd-card__sub">${city.country}</p>
+        <a href="${city.href}" class="gd-card__cta">Explore ${city.name} →</a>
+      </div>`;
+
+    cardSlot.querySelector('.gd-back-btn').addEventListener('click', () => {
+      cardSlot.innerHTML = '';
+      animateTo([-15, -30, 0], BASE_SC, 750, () => {
+        setTimeout(() => { spinning = true; }, 1500);
+      });
+    });
+  }
+
+})();
+</script>
+
+<style>
+  .gd-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-8);
+    width: 100%;
+  }
+
+  .gd-stage {
+    width: 100%;
+    max-width: 560px;
+    margin-inline: auto;
+  }
+
+  .gd-svg {
+    width: 100%;
+    height: auto;
+    overflow: visible;
+    cursor: grab;
+    filter:
+      drop-shadow(0 0 36px rgba(200, 121, 65, 0.3))
+      drop-shadow(0 20px 60px rgba(0, 0, 0, 0.5));
+  }
+
+  .gd-svg:active { cursor: grabbing; }
+
+  /* Fallback ocean (shown before JS runs) */
+  .gd-ocean-fallback {
+    fill: #0d1f14;
+  }
+
+  /* Glow ring */
+  .gd-glow {
+    fill: none;
+    stroke: rgba(200, 121, 65, 0.18);
+    stroke-width: 32;
+  }
+
+  /* Ocean */
+  .gd-ocean {
+    fill: #0d1f14;
+  }
+
+  /* Graticule lines */
+  .gd-grat {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.07);
+    stroke-width: 0.5;
+  }
+
+  /* Countries */
+  .gd-country {
+    fill: #2e4733;
+    stroke: #1c2e22;
+    stroke-width: 0.4;
+  }
+
+  /* UK + UAE */
+  .gd-country--active {
+    fill: #3d5a40;
+    stroke: #283d2b;
+    stroke-width: 0.5;
+  }
+
+  .gd-country--active.gd-country--hover {
+    fill: #c87941;
+    stroke: #9a5c2a;
+  }
+
+  /* Pulse ring */
+  .gd-marker-pulse {
+    fill: rgba(200, 121, 65, 0.45);
+    pointer-events: none;
+    animation: gd-pulse 2.4s ease-out infinite;
+  }
+
+  @keyframes gd-pulse {
+    0%   { r: 5;  opacity: 0.8; }
+    100% { r: 18; opacity: 0;   }
+  }
+
+  /* City dot */
+  .gd-marker-dot {
+    fill: #c87941;
+    stroke: white;
+    stroke-width: 1.5;
+  }
+
+  /* ── City card ───────────────────────────── */
+  .gd-card-slot {
+    width: 100%;
+    max-width: 360px;
+  }
+
+  .gd-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-6) var(--space-8) var(--space-8);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    animation: gd-in 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  @keyframes gd-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  }
+
+  .gd-back-btn {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: color 0.2s;
+  }
+  .gd-back-btn:hover { color: var(--sage); }
+
+  .gd-card__eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .gd-card__name {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1;
+  }
+
+  .gd-card__sub {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    margin-bottom: var(--space-2);
+  }
+
+  .gd-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-7);
+    background: var(--sage);
+    color: var(--cream);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    align-self: flex-start;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .gd-card__cta:hover {
+    background: var(--terracotta);
+    transform: translateY(-2px);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .gd-marker-pulse { animation: none; }
+  }
+</style>

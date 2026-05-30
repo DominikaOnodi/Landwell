@@ -1,0 +1,148 @@
+---
+// Footer.astro
+---
+
+<footer class="footer">
+  <div class="container">
+
+    <div class="footer__top">
+
+      <!-- Brand -->
+      <div class="footer__brand">
+        <a href="/" class="footer__logo">Landwell</a>
+        <p class="footer__strapline">
+          A borderless community for people building life abroad.
+        </p>
+      </div>
+
+      <!-- Navigation -->
+      <nav class="footer__nav" aria-label="Footer navigation">
+        <div class="footer__nav-group">
+          <p class="footer__nav-heading">Explore</p>
+          <ul>
+            <li><a href="/explorer">The Explorer</a></li>
+            <li><a href="/anchor">The Anchor</a></li>
+            <li><a href="/connector">The Connector</a></li>
+          </ul>
+        </div>
+        <div class="footer__nav-group">
+          <p class="footer__nav-heading">Landwell</p>
+          <ul>
+            <li><a href="/#about">Our Story</a></li>
+            <li>
+              <a href="https://www.instagram.com/land.well" target="_blank" rel="noopener">
+                Instagram
+              </a>
+            </li>
+            <li><a href="/#join">Join us</a></li>
+          </ul>
+        </div>
+      </nav>
+
+    </div>
+
+    <div class="footer__bottom">
+      <p class="footer__copy">© 2025 Landwell</p>
+      <p class="footer__heart">Made with ♥ for every international.</p>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--sage);
+    color: rgba(255, 255, 255, 0.75);
+    padding-block: var(--space-16) var(--space-10);
+  }
+
+  /* Top row */
+  .footer__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+    padding-bottom: var(--space-12);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  @media (min-width: 680px) {
+    .footer__top {
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: flex-start;
+    }
+  }
+
+  /* Brand */
+  .footer__logo {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    color: white;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+    display: block;
+    margin-bottom: var(--space-3);
+    transition: opacity 0.2s;
+  }
+
+  .footer__logo:hover { opacity: 0.75; }
+
+  .footer__strapline {
+    font-size: var(--text-sm);
+    line-height: 1.65;
+    max-width: 30ch;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  /* Nav */
+  .footer__nav {
+    display: flex;
+    gap: var(--space-12);
+  }
+
+  .footer__nav-group ul {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .footer__nav-heading {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.4);
+  }
+
+  .footer__nav a {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer__nav a:hover { color: white; }
+
+  /* Bottom row */
+  .footer__bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-3);
+    padding-top: var(--space-8);
+  }
+
+  .footer__copy,
+  .footer__heart {
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.35);
+    max-width: none;
+  }
+
+  .footer__heart { color: rgba(200, 121, 65, 0.6); }
+</style>

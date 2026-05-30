@@ -1,0 +1,103 @@
+---
+// Mission.astro — Why Landwell exists
+---
+
+<section id="about" class="mission section">
+  <span class="msp msp--1" aria-hidden="true">✦</span>
+  <span class="msp msp--2" aria-hidden="true">✦</span>
+  <span class="msp msp--3" aria-hidden="true">✦</span>
+  <div class="container">
+    <div class="mission__inner">
+
+      <span class="eyebrow">Our story ✦</span>
+
+      <h2 class="mission__heading">
+        Built by someone<br>who's been there.
+      </h2>
+
+      <div class="mission__body">
+        <p>
+          Moving to a new country is one of the most disorienting things a person can do.
+          The paperwork, the bureaucracy, the systems nobody explains — and underneath all of it,
+          a quieter kind of loneliness. The kind that comes from being surrounded by people who
+          don't quite understand what it feels like to start from zero.
+        </p>
+        <p>
+          Landwell was born from that feeling. Built by someone who has navigated that confusion
+          more than once — and who knows that what makes the real difference isn't just information.
+          It's people. The friend who already found the good GP. The neighbour who walked you through
+          the bank account process. The stranger in a group chat who replied to your anxious message
+          at midnight.
+        </p>
+        <p>
+          We wanted to build that — in one place. A community of people who've already figured it out,
+          and who want to hold the door open for the ones just arriving.
+        </p>
+      </div>
+
+      <p class="mission__sign" aria-hidden="true">♥</p>
+
+    </div>
+  </div>
+</section>
+
+<style>
+  .mission {
+    background: var(--sage-pale);
+    position: relative;
+  }
+
+  .msp {
+    position: absolute;
+    color: var(--terracotta);
+    pointer-events: none;
+    user-select: none;
+    animation: msp-float 5s ease-in-out infinite;
+  }
+
+  .msp--1 { top: 12%;    left: 6%;   font-size: 0.85rem; opacity: 0.25; animation-delay: 0s; }
+  .msp--2 { top: 20%;    right: 5%;  font-size: 0.6rem;  opacity: 0.18; animation-delay: 1.8s; }
+  .msp--3 { bottom: 14%; right: 7%;  font-size: 0.75rem; opacity: 0.2;  animation-delay: 3.1s; }
+
+  @keyframes msp-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-7px) rotate(15deg); }
+  }
+
+  .mission__inner {
+    max-width: 680px;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .mission__heading {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-3xl), 5.5vw, var(--text-5xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.15;
+    margin-bottom: var(--space-10);
+  }
+
+  .mission__body {
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-6);
+  }
+
+  .mission__body p {
+    font-size: clamp(var(--text-base), 1.8vw, var(--text-lg));
+    color: var(--text-medium);
+    line-height: 1.85;
+    max-width: 100%;
+  }
+
+  .mission__sign {
+    margin-top: var(--space-12);
+    font-size: var(--text-xl);
+    color: var(--terracotta);
+    opacity: 0.5;
+  }
+</style>

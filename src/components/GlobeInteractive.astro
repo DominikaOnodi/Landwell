@@ -1,0 +1,138 @@
+---
+// GlobeInteractive.astro
+// Drag-to-rotate WebGL Earth globe powered by cobe.
+// Markers are visual only — city navigation lives in the surrounding UI.
+
+interface Marker {
+  location: [number, number];  // [lat, lng]
+  size: number;
+}
+
+interface Props {
+  markers?: Marker[];
+}
+
+const { markers = [] } = Astro.props;
+const markersJson = JSON.stringify(markers);
+---
+
+<div class="gi-wrap">
+  <canvas class="gi-canvas" data-markers={markersJson}></canvas>
+</div>
+
+<script>
+  import createGlobe from 'cobe';
+
+  const canvas = document.querySelector('.gi-canvas') as HTMLCanvasElement;
+  if (!canvas) throw new Error('Globe canvas not found');
+
+  const markers: { location: [number, number]; size: number }[] =
+    JSON.parse(canvas.dataset.markers || '[]');
+
+  // Start focused on Europe + Middle East region
+  let phi = -0.4;
+  let theta = 0.2;
+  let isDragging = false;
+  let lastX = 0;
+  let lastY = 0;
+  let autoSpin = true;
+
+  const dpr = Math.min(window.devicePixelRatio, 2);
+  const size = canvas.parentElement!.offsetWidth;
+
+  const globe = createGlobe(canvas, {
+    devicePixelRatio: dpr,
+    width:  size * dpr,
+    height: size * dpr,
+    phi,
+    theta,
+    dark: 1,
+    diffuse: 1.6,
+    mapSamples: 24000,
+    mapBrightness: 5.5,
+    baseColor:   [0.18, 0.28, 0.20],   // dark sage ocean
+    markerColor: [0.78, 0.47, 0.25],   // terracotta pins
+    glowColor:   [0.78, 0.47, 0.25],   // terracotta edge glow
+    markers,
+    onRender(state) {
+      if (!isDragging && autoSpin) phi += 0.002;
+      state.phi   = phi;
+      state.theta = theta;
+    },
+  });
+
+  // ── Mouse drag ──────────────────────────────
+  canvas.addEventListener('mousedown', (e) => {
+    isDragging = true;
+    autoSpin = false;
+    lastX = e.clientX;
+    lastY = e.clientY;
+    canvas.style.cursor = 'grabbing';
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    phi   += (e.clientX - lastX) * 0.006;
+    theta -= (e.clientY - lastY) * 0.003;
+    theta  = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, theta));
+    lastX = e.clientX;
+    lastY = e.clientY;
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    canvas.style.cursor = 'grab';
+  });
+
+  // ── Touch drag ──────────────────────────────
+  canvas.addEventListener('touchstart', (e) => {
+    isDragging = true;
+    autoSpin = false;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (!isDragging) return;
+    phi   += (e.touches[0].clientX - lastX) * 0.006;
+    theta -= (e.touches[0].clientY - lastY) * 0.003;
+    theta  = Math.max(-Math.PI / 2.5, Math.min(Math.PI / 2.5, theta));
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+  }, { passive: true });
+
+  canvas.addEventListener('touchend', () => { isDragging = false; });
+
+  // Resume auto-spin after 3 s of inactivity
+  let spinTimer: ReturnType<typeof setTimeout>;
+  const resetSpin = () => {
+    clearTimeout(spinTimer);
+    spinTimer = setTimeout(() => { autoSpin = true; }, 3000);
+  };
+  canvas.addEventListener('mouseup',   resetSpin);
+  canvas.addEventListener('touchend',  resetSpin);
+</script>
+
+<style>
+  .gi-wrap {
+    width: 100%;
+    aspect-ratio: 1;
+    position: relative;
+  }
+
+  .gi-canvas {
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    border-radius: 50%;
+    /* Subtle outer glow matching terracotta */
+    filter: drop-shadow(0 0 40px rgba(200, 121, 65, 0.25))
+            drop-shadow(0 20px 60px rgba(0, 0, 0, 0.35));
+  }
+
+  .gi-canvas:active { cursor: grabbing; }
+
+  @media (prefers-reduced-motion: reduce) {
+    /* cobe's onRender still fires but phi won't increment — globe is static */
+  }
+</style>

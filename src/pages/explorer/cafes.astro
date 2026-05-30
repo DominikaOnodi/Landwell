@@ -1,0 +1,114 @@
+---
+import GuidePage from '../../layouts/GuidePage.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+---
+
+<GuidePage
+  title="Cafés & Coffee in London"
+  description="London's independent café scene is world-class. Here's where to start — from the institutions that shaped the city's coffee culture to the neighbourhoods worth getting lost in."
+  category="The Explorer"
+  categoryHref="/explorer"
+  heroBg="var(--sage-pale)"
+  readTime="4 min"
+  lastUpdated="May 2026"
+  mascotSrc="/mascots/explorer-cafes.png"
+>
+
+  <p>
+    London's coffee scene has come a long way from the days of terrible instant. The city now
+    has one of the world's most exciting independent café cultures — heavily influenced by
+    Australian, New Zealand and Scandinavian coffee traditions, and deeply rooted in specific
+    neighbourhoods. This is where to begin.
+  </p>
+
+  <div class="callout callout--tip">
+    <span class="callout__heading">✦ A note on this guide</span>
+    <p>
+      The café scene in London moves fast — beloved spots close, brilliant new ones open.
+      We've focused on well-established, long-running places with a track record. Always check
+      Google Maps or the café's own website before making a special trip. And when in doubt —
+      wander. Every London neighbourhood has good independent coffee if you look.
+    </p>
+  </div>
+
+  <!-- ── The institutions ────────────────── -->
+  <h2>The institutions</h2>
+
+  <p>
+    A handful of cafés have genuinely shaped London's coffee culture and have been doing so for
+    long enough that they've become part of the city's fabric.
+  </p>
+
+  <PlaceCard
+    name="Monmouth Coffee"
+    area="Borough Market, SE1 / Covent Garden, WC2"
+    tags={["Specialty Coffee", "Iconic", "No WiFi"]}
+    description="Arguably the café that started London's specialty coffee movement. Operating since 1978 — yes, 1978 — Monmouth sources and roasts its own beans and serves them in two beautiful spaces: a narrow shop near Borough Market and a slightly larger room in Covent Garden. No WiFi. No laptop culture. Just very, very good coffee."
+    href="https://www.monmouthcoffee.co.uk"
+    tip="The Borough Market branch opens at 7:30am on market days and the queue forms early. The coffee is worth it."
+  />
+
+  <PlaceCard
+    name="Kaffeine"
+    area="Fitzrovia, W1"
+    tags={["Specialty Coffee", "Food", "Central"]}
+    description="Australian-owned, Fitzrovia-based, and one of London's most consistently excellent coffee spots since 2009. Exceptional espresso and filter, a short but brilliant food menu, and a warmth that makes it feel like a neighbourhood local despite being minutes from Oxford Street. The original on Great Titchfield Street is the one."
+    href="https://www.kaffeine.co.uk"
+    tip="Get there before 10am for the best selection of pastries and a seat. It fills up fast."
+  />
+
+  <PlaceCard
+    name="Prufrock Coffee"
+    area="Clerkenwell, EC1"
+    tags={["Specialty Coffee", "Training", "EC1"]}
+    description="Named after T.S. Eliot's Prufrock poem and based on Leather Lane in Clerkenwell, Prufrock has been one of London's most respected coffee spots since 2011. Winner of multiple awards, home to a coffee training school, and a favourite of the city's coffee professionals. The coffee here is reliably extraordinary."
+    href="https://www.prufrockcoffee.com"
+    tip="Leather Lane itself is a lovely street market at lunchtime on weekdays — worth combining with a coffee stop."
+  />
+
+  <!-- ── By neighbourhood ────────────────── -->
+  <h2>By neighbourhood: where to explore</h2>
+
+  <p>
+    Beyond specific cafés, some London neighbourhoods have such a concentration of good
+    independent coffee that they're worth exploring properly.
+  </p>
+
+  <PlaceCard
+    name="Shoreditch & Bethnal Green"
+    area="East London, E1/E2"
+    tags={["Neighbourhood", "Dense Coffee Scene"]}
+    description="East London's creative heartland has more specialty coffee per square mile than almost anywhere else in the city. Allpress Espresso on Redchurch Street (New Zealand-roasted, beautiful space), Workshop Coffee on Mortimer Street, and dozens of smaller independents. A weekend morning here — coffee, market, walk — is a quintessential London experience."
+    href="https://www.allpressespresso.com"
+    tip="Combine coffee with the Columbia Road Flower Market (Sundays, 8am–3pm, about 15 minutes walk away). One of east London's best mornings."
+  />
+
+  <PlaceCard
+    name="Brixton"
+    area="Brixton, SW9"
+    tags={["Neighbourhood", "Community Feel", "South London"]}
+    description="Brixton's café scene is deeply tied to its community — diverse, creative, independent. The covered market arcades (Brixton Village and Market Row) are full of independent cafés alongside international food. A completely different flavour from north or east London, and one of the most vibrant neighbourhoods to spend a Saturday morning."
+    href="https://www.brixtonmarket.net"
+    tip="Brixton gets very busy on Saturday afternoons. Go on a weekday or arrive early on weekends."
+  />
+
+  <PlaceCard
+    name="Marylebone Village"
+    area="Marylebone, W1"
+    tags={["Neighbourhood", "Quieter", "Central-ish"]}
+    description="A village-within-a-city feel — independent shops, bookshops, delis and cafés on and around Marylebone High Street. Less frenetic than Shoreditch, more neighbourhood than central London. A lovely area to slow down and spend a few hours, especially on a weekday."
+    href="https://www.themarylebone.com"
+    tip="The Monocle Café on Chiltern Street (small, considered, excellent) and Daunt Books a few minutes walk away make for a very good morning."
+  />
+
+  <!-- ── Practical notes ─────────────────── -->
+  <h2>A few practical things</h2>
+
+  <ul>
+    <li><strong>WiFi culture:</strong> Unlike many cities, plenty of London's best independent cafés deliberately have no WiFi — it's a statement about the kind of space they want to be. If you're working, check before you go.</li>
+    <li><strong>Service charge:</strong> Most London cafés don't add a service charge at the counter — tipping is appreciated but not expected for counter service.</li>
+    <li><strong>Oat milk:</strong> Widely available, sometimes at a small additional charge (usually 50p–70p).</li>
+    <li><strong>Finding new places:</strong> The Instagram accounts of specialty coffee roasters (Allpress, Workshop, Square Mile, Assembly) will lead you to good independent cafés across the city.</li>
+  </ul>
+
+</GuidePage>

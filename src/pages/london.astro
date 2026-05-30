@@ -1,0 +1,599 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const guides = [
+  {
+    id: "explorer",
+    name: "The Explorer",
+    image: "/mascots/explorer.png",
+    imageAlt: "The Explorer mascot",
+    tagline: "Discover places, cafés, culture and hidden gems.",
+    cta: "Explore London",
+    href: "/explorer",
+    bg: "var(--sage-pale)",
+  },
+  {
+    id: "anchor",
+    name: "The Anchor",
+    image: "/mascots/anchor.png",
+    imageAlt: "The Anchor mascot",
+    tagline: "Visas, renting, healthcare, banking — all in one place.",
+    cta: "Build your life here",
+    href: "/anchor",
+    bg: "var(--terracotta-pale)",
+  },
+  {
+    id: "connector",
+    name: "The Connector",
+    image: "/mascots/connector.png",
+    imageAlt: "The Connector mascot",
+    tagline: "Meet people, join communities, find your crowd.",
+    cta: "Find your people",
+    href: "/connector",
+    bg: "var(--cream-dark)",
+  },
+];
+
+const stats = [
+  { value: "300+",  label: "languages spoken" },
+  { value: "33",    label: "boroughs to explore" },
+  { value: "272",   label: "tube stations" },
+  { value: "9M",    label: "people call it home" },
+];
+---
+
+<Layout title="London — Landwell" description="Your guide to living, exploring and connecting in London. Made for internationals, by someone who moved here too.">
+  <Nav />
+
+  <!-- ── Hero ─────────────────────────────── -->
+  <section class="city-hero">
+
+    <!-- Abstract London skyline silhouette -->
+    <div class="city-hero__skyline" aria-hidden="true">
+      <svg viewBox="0 0 1400 180" preserveAspectRatio="xMidYMax meet" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Left side buildings -->
+        <rect x="0"   y="80"  width="55"  height="100" fill="rgba(255,255,255,0.04)"/>
+        <rect x="60"  y="55"  width="75"  height="125" fill="rgba(255,255,255,0.05)"/>
+        <rect x="140" y="75"  width="45"  height="105" fill="rgba(255,255,255,0.04)"/>
+        <!-- Tower Bridge (simplified) -->
+        <rect x="220" y="28"  width="26"  height="152" fill="rgba(255,255,255,0.07)"/>
+        <path d="M220 28 L233 8 L246 28 Z"              fill="rgba(255,255,255,0.06)"/>
+        <rect x="298" y="28"  width="26"  height="152" fill="rgba(255,255,255,0.07)"/>
+        <path d="M298 28 L311 8 L324 28 Z"              fill="rgba(255,255,255,0.06)"/>
+        <rect x="220" y="95"  width="104" height="9"   fill="rgba(255,255,255,0.05)"/>
+        <!-- Mid city cluster -->
+        <rect x="370" y="60"  width="48"  height="120" fill="rgba(255,255,255,0.05)"/>
+        <rect x="425" y="82"  width="32"  height="98"  fill="rgba(255,255,255,0.04)"/>
+        <rect x="464" y="48"  width="52"  height="132" fill="rgba(255,255,255,0.06)"/>
+        <rect x="522" y="70"  width="38"  height="110" fill="rgba(255,255,255,0.04)"/>
+        <!-- The Shard -->
+        <path d="M610 0 L596 180 L624 180 Z"            fill="rgba(255,255,255,0.08)"/>
+        <!-- South bank -->
+        <rect x="650" y="72"  width="44"  height="108" fill="rgba(255,255,255,0.04)"/>
+        <rect x="702" y="52"  width="58"  height="128" fill="rgba(255,255,255,0.05)"/>
+        <rect x="768" y="88"  width="36"  height="92"  fill="rgba(255,255,255,0.04)"/>
+        <!-- St Paul's -->
+        <rect x="840" y="78"  width="72"  height="102" fill="rgba(255,255,255,0.04)"/>
+        <path d="M840 78 Q876 42 912 78"                fill="rgba(255,255,255,0.05)"/>
+        <!-- City buildings -->
+        <rect x="950" y="65"  width="46"  height="115" fill="rgba(255,255,255,0.05)"/>
+        <rect x="1004" y="44" width="36"  height="136" fill="rgba(255,255,255,0.06)"/>
+        <rect x="1048" y="72" width="42"  height="108" fill="rgba(255,255,255,0.04)"/>
+        <!-- Canary Wharf towers -->
+        <rect x="1120" y="22" width="48"  height="158" fill="rgba(255,255,255,0.08)"/>
+        <rect x="1175" y="48" width="38"  height="132" fill="rgba(255,255,255,0.06)"/>
+        <rect x="1220" y="62" width="52"  height="118" fill="rgba(255,255,255,0.05)"/>
+        <rect x="1280" y="38" width="42"  height="142" fill="rgba(255,255,255,0.07)"/>
+        <rect x="1330" y="58" width="70"  height="122" fill="rgba(255,255,255,0.04)"/>
+        <!-- Thames -->
+        <rect x="0"   y="174" width="1400" height="6"  fill="rgba(255,255,255,0.07)"/>
+      </svg>
+    </div>
+
+    <!-- Sparkles -->
+    <span class="hs hs--1" aria-hidden="true">✦</span>
+    <span class="hs hs--2" aria-hidden="true">✦</span>
+    <span class="hs hs--3" aria-hidden="true">✦</span>
+
+    <div class="container city-hero__inner">
+      <a href="/" class="city-hero__back">← Landwell</a>
+      <p class="city-hero__eyebrow">United Kingdom ✦</p>
+      <h1 class="city-hero__name">London</h1>
+      <p class="city-hero__tagline">Eight million stories.<br>You're about to write yours.</p>
+      <a href="#guides" class="city-hero__scroll" aria-label="Scroll to guides">· · ·</a>
+    </div>
+  </section>
+
+  <!-- ── Three guides ──────────────────────── -->
+  <section id="guides" class="city-guides section">
+    <div class="container">
+      <div class="city-guides__header">
+        <span class="eyebrow">Your guides to London ✦</span>
+        <h2 class="city-guides__title">How would you like to start?</h2>
+      </div>
+
+      <div class="city-guides__grid">
+        {guides.map((g) => (
+          <a href={g.href} class={`cg-card cg-card--${g.id}`} style={`--cg-bg: ${g.bg};`}>
+            <div class="cg-card__figure">
+              <img src={g.image} alt={g.imageAlt} class="cg-card__img" loading="lazy" width="200" height="230"/>
+            </div>
+            <div class="cg-card__body">
+              <h3 class="cg-card__name">{g.name}</h3>
+              <p class="cg-card__tagline">{g.tagline}</p>
+              <span class="cg-card__cta">{g.cta} <span class="cg-arrow">→</span></span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── About London ──────────────────────── -->
+  <section class="city-about section">
+    <div class="container">
+      <div class="city-about__inner">
+
+        <div class="city-about__text">
+          <span class="eyebrow">Get to know London ✦</span>
+          <h2 class="city-about__heading">Complicated, brilliant,<br>endlessly surprising.</h2>
+          <p>London doesn't ease you in gently. It hands you an Oyster card and says good luck. But somewhere between your first flat viewing disaster, your first Sunday at a market, and the moment you figure out which tube line actually goes where you want to go — it becomes yours.</p>
+          <p>Built on layers of arrivals, the city has always absorbed people and made them Londoners. Over nine million people live here, speaking more than 300 languages between them. There is a neighbourhood for everyone, a community waiting to be found, and more hidden gems than any one person could discover in a lifetime. You're next.</p>
+        </div>
+
+        <div class="city-about__stats">
+          {stats.map((s) => (
+            <div class="stat-chip">
+              <span class="stat-chip__value">{s.value}</span>
+              <span class="stat-chip__label">{s.label}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Start exploring ───────────────────── -->
+  <section class="city-start section">
+    <div class="container">
+      <div class="city-start__header">
+        <span class="eyebrow">Explore by category ✦</span>
+        <h2 class="city-start__title">Where would you like to go?</h2>
+        <p class="city-start__sub">Content is growing — check back often as we add more London guides.</p>
+      </div>
+
+      <div class="city-start__grid">
+        <a href="/anchor/moving-checklist" class="start-card start-card--live">
+          <span class="start-card__icon">✅</span>
+          <span class="start-card__label">Moving Checklist</span>
+          <span class="start-card__badge">Anchor</span>
+        </a>
+        <a href="/anchor/renting" class="start-card start-card--live">
+          <span class="start-card__icon">🏠</span>
+          <span class="start-card__label">Renting a Home</span>
+          <span class="start-card__badge">Anchor</span>
+        </a>
+        <a href="/anchor/banking" class="start-card start-card--live">
+          <span class="start-card__icon">🏦</span>
+          <span class="start-card__label">Banking</span>
+          <span class="start-card__badge">Anchor</span>
+        </a>
+        <a href="/connector" class="start-card start-card--live">
+          <span class="start-card__icon">🎉</span>
+          <span class="start-card__label">Events &amp; Meetups</span>
+          <span class="start-card__badge">Connector</span>
+        </a>
+        <a href="/explorer/museums" class="start-card start-card--live">
+          <span class="start-card__icon">🎨</span>
+          <span class="start-card__label">Museums &amp; Galleries</span>
+          <span class="start-card__badge">Explorer</span>
+        </a>
+        <a href="/anchor/visas" class="start-card start-card--live">
+          <span class="start-card__icon">📋</span>
+          <span class="start-card__label">Visas &amp; Immigration</span>
+          <span class="start-card__badge">Anchor</span>
+        </a>
+        <a href="/anchor/healthcare" class="start-card start-card--live">
+          <span class="start-card__icon">🏥</span>
+          <span class="start-card__label">Healthcare &amp; NHS</span>
+          <span class="start-card__badge">Anchor</span>
+        </a>
+        <a href="/explorer/markets" class="start-card start-card--live">
+          <span class="start-card__icon">🛍️</span>
+          <span class="start-card__label">Markets</span>
+          <span class="start-card__badge">Explorer</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>
+
+<style>
+  /* ── Hero ──────────────────────────────────── */
+  .city-hero {
+    min-height: 92svh;
+    background: #263830;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding-top: 90px;
+    padding-bottom: var(--space-20);
+  }
+
+  .city-hero__skyline {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    pointer-events: none;
+  }
+
+  .city-hero__skyline svg {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  /* Sparkles on the hero */
+  .hs {
+    position: absolute;
+    color: var(--terracotta);
+    pointer-events: none;
+    user-select: none;
+    animation: hs-float 5s ease-in-out infinite;
+  }
+
+  .hs--1 { top: 18%; left: 6%;   font-size: 1rem;   opacity: 0.35; animation-delay: 0s; }
+  .hs--2 { top: 12%; right: 8%;  font-size: 0.7rem;  opacity: 0.25; animation-delay: 1.5s; }
+  .hs--3 { bottom: 25%; right: 6%; font-size: 0.85rem; opacity: 0.28; animation-delay: 3s; }
+
+  @keyframes hs-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-9px) rotate(20deg); }
+  }
+
+  .city-hero__inner {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+
+  .city-hero__back {
+    font-size: var(--text-sm);
+    color: rgba(255, 255, 255, 0.45);
+    text-decoration: none;
+    transition: color 0.2s;
+    margin-bottom: var(--space-4);
+  }
+
+  .city-hero__back:hover { color: rgba(255, 255, 255, 0.8); }
+
+  .city-hero__eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--text-xs);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terracotta-light);
+    opacity: 0.85;
+  }
+
+  .city-hero__name {
+    font-family: var(--font-heading);
+    font-size: clamp(5.5rem, 18vw, 14rem);
+    font-weight: 300;
+    font-style: italic;
+    color: var(--cream);
+    line-height: 0.88;
+    letter-spacing: -0.02em;
+  }
+
+  .city-hero__tagline {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-xl), 2.8vw, var(--text-3xl));
+    font-weight: 300;
+    color: rgba(255, 255, 255, 0.55);
+    line-height: 1.4;
+    margin-top: var(--space-2);
+    max-width: 100%;
+  }
+
+  .city-hero__scroll {
+    margin-top: var(--space-10);
+    font-size: var(--text-lg);
+    color: var(--terracotta-light);
+    opacity: 0.5;
+    letter-spacing: 0.4em;
+    text-decoration: none;
+  }
+
+  /* ── Three guides ────────────────────────── */
+  .city-guides {
+    background: var(--cream);
+  }
+
+  .city-guides__header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .city-guides__title {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+    font-weight: 400;
+    color: var(--sage);
+  }
+
+  .city-guides__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+  }
+
+  @media (min-width: 680px) {
+    .city-guides__grid { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* Guide card — compact arch shape */
+  .cg-card {
+    display: flex;
+    flex-direction: column;
+    background: var(--cg-bg);
+    border-radius: 999px 999px var(--radius-xl) var(--radius-xl);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+  }
+
+  .cg-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .cg-card:hover .cg-card__img   { transform: scale(1.06) translateY(-5px); }
+  .cg-card:hover .cg-arrow       { transform: translateX(5px); }
+
+  .cg-card__figure {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-8) var(--space-8) 0;
+    min-height: 220px;
+  }
+
+  .cg-card__img {
+    width: 100%;
+    max-width: 180px;
+    height: auto;
+    object-fit: contain;
+    mix-blend-mode: multiply;
+    transition: transform 0.3s ease;
+  }
+
+  .cg-card__body {
+    padding: var(--space-5) var(--space-6) var(--space-8);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    flex: 1;
+  }
+
+  .cg-card__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+  }
+
+  .cg-card__tagline {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    line-height: 1.65;
+    max-width: 22ch;
+  }
+
+  .cg-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--terracotta);
+  }
+
+  .cg-arrow { display: inline-block; transition: transform 0.2s ease; }
+
+  /* Mobile: horizontal layout */
+  @media (max-width: 679px) {
+    .cg-card {
+      flex-direction: row;
+      border-radius: var(--radius-xl);
+      align-items: center;
+    }
+
+    .cg-card__figure {
+      min-height: unset;
+      width: 120px;
+      flex-shrink: 0;
+      padding: var(--space-4) var(--space-3) var(--space-4) var(--space-5);
+      align-items: center;
+    }
+
+    .cg-card__img { max-width: 80px; }
+    .cg-card:hover .cg-card__img { transform: scale(1.04) translateY(0); }
+
+    .cg-card__body {
+      text-align: left;
+      align-items: flex-start;
+      padding: var(--space-5) var(--space-5) var(--space-5) var(--space-2);
+    }
+  }
+
+  /* ── About London ────────────────────────── */
+  .city-about {
+    background: var(--sage-pale);
+  }
+
+  .city-about__inner {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-16);
+  }
+
+  @media (min-width: 800px) {
+    .city-about__inner {
+      grid-template-columns: 1fr 1fr;
+      align-items: start;
+      gap: var(--space-20);
+    }
+  }
+
+  .city-about__heading {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.15;
+    margin-block: var(--space-4) var(--space-8);
+  }
+
+  .city-about__text p {
+    font-size: clamp(var(--text-base), 1.6vw, var(--text-lg));
+    color: var(--text-medium);
+    line-height: 1.85;
+    max-width: 100%;
+  }
+
+  .city-about__text p + p { margin-top: var(--space-5); }
+
+  /* Stats */
+  .city-about__stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    align-content: start;
+  }
+
+  .stat-chip {
+    background: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .stat-chip__value {
+    font-family: var(--font-heading);
+    font-size: var(--text-4xl);
+    font-weight: 400;
+    color: var(--sage);
+    line-height: 1;
+  }
+
+  .stat-chip__label {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+  }
+
+  /* ── Start exploring ─────────────────────── */
+  .city-start {
+    background: var(--cream);
+  }
+
+  .city-start__header {
+    text-align: center;
+    margin-bottom: var(--space-12);
+  }
+
+  .city-start__title {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
+    font-weight: 400;
+    color: var(--sage);
+    margin-bottom: var(--space-3);
+  }
+
+  .city-start__sub {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    max-width: 44ch;
+    margin-inline: auto;
+  }
+
+  .city-start__grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+
+  @media (min-width: 600px)  { .city-start__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 900px)  { .city-start__grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .start-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    padding: var(--space-6);
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    position: relative;
+  }
+
+  .start-card--live {
+    background: var(--white);
+    box-shadow: var(--shadow-sm);
+    cursor: pointer;
+  }
+
+  .start-card--live:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-md);
+  }
+
+  .start-card--soon {
+    background: var(--cream-dark);
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  .start-card__icon { font-size: var(--text-2xl); line-height: 1; }
+
+  .start-card__label {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-weight: 500;
+    color: var(--sage);
+    flex: 1;
+  }
+
+  .start-card__badge {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    align-self: flex-start;
+  }
+
+  .start-card--soon .start-card__badge { color: var(--text-light); }
+</style>

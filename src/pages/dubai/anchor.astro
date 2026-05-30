@@ -1,0 +1,23 @@
+---
+import MascotPage from '../../layouts/MascotPage.astro';
+---
+
+<MascotPage
+  id="anchor"
+  name="The Anchor"
+  tagline="Build your life in Dubai."
+  image="/mascots/anchor.png"
+  imageAlt="The Anchor — a cosy potato with a warm mug and a plant"
+  bg="var(--terracotta-pale)"
+  city="Dubai"
+  categories={[
+    { label: "Visas & Residency", icon: "📋", href: "/dubai/visas" },
+    { label: "Renting a Home",    icon: "🏠", href: "/dubai/renting" },
+    { label: "Banking",           icon: "🏦", href: "/dubai/banking" },
+    { label: "Healthcare",        icon: "🏥", href: "#" },
+    { label: "Insurance",         icon: "🛡️", href: "#" },
+    { label: "Moving Checklist",  icon: "✅", href: "#" },
+    { label: "Jobs & Work",       icon: "💼", href: "#" },
+    { label: "Practical Guides",  icon: "📚", href: "#" },
+  ]}
+/>

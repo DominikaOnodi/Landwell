@@ -1,0 +1,168 @@
+---
+// PlaceCard.astro — curated place recommendation card for Explorer guides.
+// Future: add sponsored/affiliateHref for venue partnerships and booking platforms.
+interface Props {
+  name:        string;
+  area:        string;
+  tags:        string[];
+  description: string;
+  href:        string;
+  tip?:        string;
+  sponsored?:  boolean;
+}
+
+const { name, area, tags, description, href, tip, sponsored = false } = Astro.props;
+---
+
+<div class={`place-card ${sponsored ? "place-card--sponsored" : ""}`}>
+  {sponsored && <span class="place-card__sponsored">Sponsored</span>}
+
+  <div class="place-card__tags">
+    {tags.map((tag) => <span class="place-card__tag">{tag}</span>)}
+  </div>
+
+  <div class="place-card__main">
+    <h3 class="place-card__name">{name}</h3>
+    <p class="place-card__area">📍 {area}</p>
+  </div>
+
+  <p class="place-card__desc">{description}</p>
+
+  {tip && (
+    <div class="place-card__tip">
+      <span class="place-card__tip-icon" aria-hidden="true">✦</span>
+      <p>{tip}</p>
+    </div>
+  )}
+
+  <a href={href} class="place-card__link" target="_blank" rel="noopener noreferrer">
+    Visit website ↗
+  </a>
+</div>
+
+<style>
+  .place-card {
+    background: var(--cream-dark);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-10);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    margin-block: var(--space-8);
+    transition: background 0.25s ease, transform 0.25s ease;
+  }
+
+  .place-card:hover {
+    background: #dad3c5;
+    transform: translateY(-2px);
+  }
+
+  .place-card--sponsored {
+    background: var(--terracotta-pale);
+    outline: 1.5px solid rgba(200, 121, 65, 0.35);
+  }
+
+  .place-card__sponsored {
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    align-self: flex-start;
+  }
+
+  /* Tags row — plain text, dot-separated, no pill bubbles */
+  .place-card__tags {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0;
+  }
+
+  .place-card__tag {
+    font-size: var(--text-xs);
+    font-weight: 500;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .place-card__tag + .place-card__tag::before {
+    content: '·';
+    margin-inline: 0.45em;
+    color: var(--text-light);
+    opacity: 0.5;
+  }
+
+  /* Name + area */
+  .place-card__main {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .place-card__name {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-2xl), 3vw, var(--text-3xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.1;
+  }
+
+  .place-card__area {
+    font-size: var(--text-sm);
+    color: var(--terracotta);
+    font-weight: 500;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* Description */
+  .place-card__desc {
+    font-size: var(--text-base);
+    color: var(--text-medium);
+    line-height: 1.75;
+    margin: 0;
+    max-width: 100%;
+  }
+
+  /* Tip */
+  .place-card__tip {
+    display: flex;
+    gap: var(--space-3);
+    align-items: flex-start;
+    background: rgba(255, 255, 255, 0.45);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .place-card__tip-icon {
+    color: var(--terracotta);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+
+  .place-card__tip p {
+    font-size: var(--text-sm);
+    color: var(--sage);
+    line-height: 1.65;
+    margin: 0;
+    max-width: 100%;
+    font-style: italic;
+  }
+
+  /* Link */
+  .place-card__link {
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--terracotta);
+    text-decoration: none;
+    align-self: flex-start;
+    transition: opacity 0.2s;
+    letter-spacing: 0.02em;
+  }
+
+  .place-card__link:hover { opacity: 0.7; }
+</style>

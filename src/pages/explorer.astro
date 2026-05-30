@@ -1,0 +1,22 @@
+---
+import MascotPage from '../layouts/MascotPage.astro';
+---
+
+<MascotPage
+  id="explorer"
+  name="The Explorer"
+  tagline="Discover your city."
+  image="/mascots/explorer.png"
+  imageAlt="The Explorer — a curious potato with a backpack and map"
+  bg="var(--sage-pale)"
+  categories={[
+    { label: "Cafés & Coffee",   icon: "☕", href: "/explorer/cafes" },
+    { label: "Restaurants",      icon: "🍽️", href: "#" },
+    { label: "Museums & Art",    icon: "🎨", href: "/explorer/museums" },
+    { label: "Parks & Nature",   icon: "🌿", href: "/explorer/parks" },
+    { label: "Hidden Gems",      icon: "✨", href: "#" },
+    { label: "Nightlife",        icon: "🌙", href: "#" },
+    { label: "Markets",          icon: "🛍️", href: "/explorer/markets" },
+    { label: "City Guides",      icon: "📖", href: "#" },
+  ]}
+/>

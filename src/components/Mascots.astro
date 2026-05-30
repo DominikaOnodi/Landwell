@@ -1,0 +1,288 @@
+---
+// Mascots.astro — Navigation portals (the three entry points into Landwell)
+const portals = [
+  {
+    id: "explorer",
+    name: "The Explorer",
+    image: "/mascots/explorer.png",
+    imageAlt: "The Explorer — a curious potato with a backpack and map",
+    description: "Discover places, culture, galleries, cafés, museums and hidden gems.",
+    cta: "Start exploring",
+    href: "/explorer",
+    bg: "var(--sage-pale)",
+  },
+  {
+    id: "anchor",
+    name: "The Anchor",
+    image: "/mascots/anchor.png",
+    imageAlt: "The Anchor — a cosy potato with a warm mug and a plant",
+    description: "Everything you need to build a life abroad: visas, housing, healthcare, banking and practical guides.",
+    cta: "Get settled",
+    href: "/anchor",
+    bg: "var(--terracotta-pale)",
+  },
+  {
+    id: "connector",
+    name: "The Connector",
+    image: "/mascots/connector.png",
+    imageAlt: "The Connector — a friendly potato with a heart flag",
+    description: "Meet people, join communities, find events and opportunities.",
+    cta: "Find your people",
+    href: "/connector",
+    bg: "var(--mint-pale)",
+  },
+];
+---
+
+<section id="guides" class="portals section">
+  <span class="sp sp--1" aria-hidden="true">✦</span>
+  <span class="sp sp--2" aria-hidden="true">✦</span>
+  <span class="sp sp--3" aria-hidden="true">✦</span>
+  <span class="sp sp--4" aria-hidden="true">✦</span>
+  <span class="sp sp--5" aria-hidden="true">✦</span>
+  <div class="container">
+
+    <div class="portals__header">
+      <div class="portals__brand">
+        <div class="portals__icon" aria-hidden="true">
+          <svg width="36" height="44" viewBox="0 0 76 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="38" cy="46" r="24" fill="#C87941" fill-opacity="0.16"/>
+            <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84" stroke="#3D5A40" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84 Z" fill="#3D5A40" fill-opacity="0.05"/>
+            <path d="M22 84 L22 46 C22 30 28 22 38 22 C48 22 54 30 54 46 L54 84" stroke="#3D5A40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+            <line x1="4" y1="84" x2="72" y2="84" stroke="#3D5A40" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+            <path d="M4 84 Q38 68 72 84" stroke="#3D5A40" stroke-width="1.5" fill="none" opacity="0.3"/>
+            <path d="M38 84 L38 80 M35 78 Q38 72 41 78" stroke="#C87941" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+          </svg>
+        </div>
+        <p class="portals__tagline">A borderless community for people building life abroad.</p>
+      </div>
+    </div>
+
+    <div class="portals__grid">
+      {portals.map((p) => (
+        <a
+          href={p.href}
+          class={`portal portal--${p.id}`}
+          style={`--portal-bg: ${p.bg};`}
+          aria-label={`Enter ${p.name} section`}
+        >
+          <div class="portal__figure">
+            <img
+              src={p.image}
+              alt={p.imageAlt}
+              class="portal__img"
+              loading="lazy"
+              width="260"
+              height="300"
+            />
+          </div>
+
+          <div class="portal__body">
+            <h3 class="portal__name">{p.name}</h3>
+            <p class="portal__desc">{p.description}</p>
+            <span class="portal__cta">
+              {p.cta}
+              <span class="portal__arrow" aria-hidden="true">→</span>
+            </span>
+          </div>
+        </a>
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<style>
+  .portals {
+    background: radial-gradient(ellipse 90% 70% at 50% 35%, var(--cream-dark) 0%, var(--cream) 65%);
+    padding-top: 100px;
+    position: relative;
+  }
+
+  /* Scattered sparkles */
+  .sp {
+    position: absolute;
+    color: var(--terracotta);
+    pointer-events: none;
+    user-select: none;
+    animation: sp-float 5s ease-in-out infinite;
+  }
+
+  .sp--1 { top: 10%;    left: 4%;   font-size: 1rem;   opacity: 0.28; animation-delay: 0s; }
+  .sp--2 { top: 7%;     right: 5%;  font-size: 0.65rem; opacity: 0.18; animation-delay: 1.3s; }
+  .sp--3 { top: 52%;    left: 2%;   font-size: 0.6rem;  opacity: 0.2;  animation-delay: 2.5s; }
+  .sp--4 { bottom: 18%; right: 4%;  font-size: 0.85rem; opacity: 0.22; animation-delay: 0.7s; }
+  .sp--5 { bottom: 30%; left: 5%;   font-size: 0.55rem; opacity: 0.15; animation-delay: 3.2s; }
+
+  @keyframes sp-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-8px) rotate(18deg); }
+  }
+
+  .portals__header {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .portals__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    justify-content: center;
+  }
+
+  .portals__icon {
+    opacity: 0.85;
+    flex-shrink: 0;
+  }
+
+  .portals__tagline {
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    white-space: nowrap;
+  }
+
+  /* Three-column grid */
+  .portals__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  @media (min-width: 680px) {
+    .portals__grid {
+      grid-template-columns: repeat(3, 1fr);
+      align-items: stretch;
+    }
+  }
+
+  /* Portal card */
+  .portal {
+    display: flex;
+    flex-direction: column;
+    background: var(--portal-bg);
+    /* Arch / doorway shape — fully rounded top, soft rounded bottom */
+    border-radius: 999px 999px var(--radius-xl) var(--radius-xl);
+    overflow: hidden;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+  }
+
+  .portal:hover {
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  /* Figure — arch area with the mascot */
+  .portal__figure {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-10) var(--space-8) 0;
+    min-height: 260px;
+  }
+
+  .portal__img {
+    display: block;
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    object-fit: contain;
+    /* Blends white image backgrounds with the card colour */
+    mix-blend-mode: multiply;
+    transition: transform 0.35s ease;
+  }
+
+  .portal:hover .portal__img {
+    transform: scale(1.06) translateY(-6px);
+  }
+
+  /* Body — text area at the bottom */
+  .portal__body {
+    padding: var(--space-6) var(--space-8) var(--space-10);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-3);
+    flex: 1;
+  }
+
+  .portal__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.1;
+  }
+
+  .portal__desc {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    line-height: 1.7;
+    max-width: 24ch;
+    margin-inline: auto;
+  }
+
+  .portal__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-2);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--terracotta);
+  }
+
+  .portal__arrow {
+    display: inline-block;
+    transition: transform 0.2s ease;
+  }
+
+  .portal:hover .portal__arrow {
+    transform: translateX(5px);
+  }
+
+  /* On mobile: compact horizontal layout for each card */
+  @media (max-width: 679px) {
+    .portal {
+      flex-direction: row;
+      border-radius: var(--radius-xl);
+      align-items: center;
+      min-height: 140px;
+    }
+
+    .portal__figure {
+      min-height: unset;
+      width: 130px;
+      flex-shrink: 0;
+      padding: var(--space-4) var(--space-4) var(--space-4) var(--space-6);
+      align-items: center;
+    }
+
+    .portal__img {
+      max-width: 90px;
+    }
+
+    .portal:hover .portal__img {
+      transform: scale(1.04) translateY(0);
+    }
+
+    .portal__body {
+      text-align: left;
+      align-items: flex-start;
+      padding: var(--space-5) var(--space-6) var(--space-5) var(--space-2);
+    }
+
+    .portal__desc {
+      max-width: none;
+      margin-inline: 0;
+    }
+  }
+</style>

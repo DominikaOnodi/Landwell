@@ -1,0 +1,209 @@
+/* ============================================
+   LANDWELL — Design Tokens & Base Styles
+   ============================================ */
+
+:root {
+  /* --- Colors --- */
+  --cream:           #EDE8DF;
+  --cream-dark:      #E3DBCE;
+  --sage:            #3D5A40;
+  --sage-light:      #5A7A5E;
+  --sage-pale:       #EEF3EE;
+  --mint-pale:       #DFF2E6;
+  --terracotta:      #C87941;
+  --terracotta-light:#E8A870;
+  --terracotta-pale: #FDF0E6;
+  --text-dark:       #2A2A2A;
+  --text-medium:     #5C5552;
+  --text-light:      #9A9490;
+  --white:           #FFFFFF;
+
+  /* --- Typography --- */
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, sans-serif;
+
+  /* --- Font sizes (mobile-first) --- */
+  --text-xs:   0.75rem;   /* 12px */
+  --text-sm:   0.875rem;  /* 14px */
+  --text-base: 1rem;      /* 16px */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px */
+  --text-2xl:  1.5rem;    /* 24px */
+  --text-3xl:  1.875rem;  /* 30px */
+  --text-4xl:  2.25rem;   /* 36px */
+  --text-5xl:  3rem;      /* 48px */
+  --text-6xl:  3.75rem;   /* 60px */
+
+  /* --- Spacing --- */
+  --space-1:  0.25rem;
+  --space-2:  0.5rem;
+  --space-3:  0.75rem;
+  --space-4:  1rem;
+  --space-6:  1.5rem;
+  --space-8:  2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  /* --- Border radius --- */
+  --radius-sm:   0.5rem;
+  --radius-md:   1rem;
+  --radius-lg:   1.5rem;
+  --radius-xl:   2rem;
+  --radius-full: 9999px;
+
+  /* --- Shadows --- */
+  --shadow-sm: 0 1px 3px rgba(61, 90, 64, 0.06), 0 1px 2px rgba(61, 90, 64, 0.04);
+  --shadow-md: 0 4px 12px rgba(61, 90, 64, 0.08), 0 2px 4px rgba(61, 90, 64, 0.05);
+  --shadow-lg: 0 10px 24px rgba(61, 90, 64, 0.10), 0 4px 8px rgba(61, 90, 64, 0.06);
+
+  /* --- Layout --- */
+  --max-content: 1200px;
+  --max-prose:   680px;
+  --gutter:      1.25rem;
+}
+
+/* ============================================
+   Reset & Base
+   ============================================ */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--text-dark);
+  background-color: var(--cream);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+img, video {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  line-height: 1.15;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+p {
+  max-width: 65ch;
+}
+
+/* ============================================
+   Utility classes
+   ============================================ */
+
+.container {
+  width: 100%;
+  max-width: var(--max-content);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.prose {
+  max-width: var(--max-prose);
+  margin-inline: auto;
+}
+
+.text-center { text-align: center; }
+.text-sage    { color: var(--sage); }
+.text-terracotta { color: var(--terracotta); }
+
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--terracotta);
+  display: block;
+  margin-bottom: var(--space-4);
+}
+
+/* ============================================
+   Buttons
+   ============================================ */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-8);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  font-weight: 500;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background-color: var(--terracotta);
+  color: var(--white);
+  border-color: var(--terracotta);
+}
+
+.btn-primary:hover {
+  background-color: var(--sage);
+  border-color: var(--sage);
+}
+
+.btn-outline {
+  background-color: transparent;
+  color: var(--sage);
+  border-color: var(--sage);
+}
+
+.btn-outline:hover {
+  background-color: var(--sage);
+  color: var(--white);
+}
+
+/* ============================================
+   Section spacing
+   ============================================ */
+
+.section {
+  padding-block: var(--space-16);
+}
+
+@media (min-width: 768px) {
+  :root {
+    --gutter: 2rem;
+  }
+
+  .section {
+    padding-block: var(--space-24);
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --gutter: 3rem;
+  }
+}

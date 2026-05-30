@@ -1,0 +1,116 @@
+---
+import GuidePage from '../../layouts/GuidePage.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+---
+
+<GuidePage
+  title="Markets in London"
+  description="From Borough Market's world-class food to Columbia Road's Sunday flower explosion — London's markets are some of the best reasons to leave the house at the weekend."
+  category="The Explorer"
+  categoryHref="/explorer"
+  heroBg="var(--sage-pale)"
+  readTime="5 min"
+  lastUpdated="May 2026"
+>
+
+  <p>
+    London has been a city of markets for a thousand years, and the tradition is very much
+    alive. Street food, antiques, flowers, vintage clothing, handmade crafts — there's a
+    market for almost everything, spread across every neighbourhood and every day of the week.
+    These are the ones worth knowing.
+  </p>
+
+  <div class="callout callout--tip">
+    <span class="callout__heading">✦ Before you go</span>
+    <p>
+      Market days and hours change seasonally and can vary around public holidays.
+      Always check the market's website or social media before visiting, especially
+      on Bank Holidays.
+    </p>
+  </div>
+
+  <!-- ── Food markets ────────────────────── -->
+  <h2>Food markets</h2>
+
+  <PlaceCard
+    name="Borough Market"
+    area="London Bridge, SE1"
+    tags={["Food", "Thursday–Saturday", "Iconic"]}
+    description="London's most famous food market — and it lives up to the reputation. Established traders selling everything from Neal's Yard cheese to Ethiopian spices to fresh pasta to the most expensive sandwiches you'll ever eat and think were worth it. Thursday, Friday and Saturday are the full market. Monday–Wednesday is a smaller food-to-go offering. Crowded at weekends — go hungry and early."
+    href="https://boroughmarket.org.uk"
+    tip="The full market runs Thursday–Saturday. Friday lunchtime is busy but manageable. Saturday afternoon is peak chaos — still worth it, but prepare yourself. The Monmouth Coffee queue is part of the experience."
+  />
+
+  <PlaceCard
+    name="Maltby Street Market"
+    area="Bermondsey, SE1"
+    tags={["Food", "Weekends", "Less Touristy"]}
+    description="Under the railway arches near London Bridge, Maltby Street is the Borough Market of those who've been to Borough Market too many times. Fewer tourists, more locals, equally excellent food and drink. Producers and small businesses selling cheese, charcuterie, natural wine, pastries and street food. Saturday and Sunday mornings."
+    href="https://www.maltbystreet.com"
+    tip="Go early (before noon) — many stalls sell out or close by early afternoon. Pairs beautifully with a walk to nearby Bermondsey Antiques Market on Friday mornings."
+  />
+
+  <PlaceCard
+    name="Broadway Market"
+    area="London Fields, E8"
+    tags={["Food & Crafts", "Saturdays", "Hackney"]}
+    description="Every Saturday, the long street of Broadway Market fills with a mix of food producers, vintage clothing, plants, books and crafts, while the permanent shops stay open. London Fields park is immediately adjacent. A quintessential east London Saturday — long, slow, excellent coffee, spontaneous conversations."
+    href="https://www.broadwaymarket.co.uk"
+    tip="The market brings together regulars who actually live in the neighbourhood — it has a genuinely local feel rather than a tourist feel. Arrive around 10am."
+  />
+
+  <!-- ── Flowers & plants ─────────────────── -->
+  <h2>Flowers & plants</h2>
+
+  <PlaceCard
+    name="Columbia Road Flower Market"
+    area="Bethnal Green, E2"
+    tags={["Flowers & Plants", "Sundays Only", "8am–3pm"]}
+    description="Every Sunday morning, a single East London street transforms into the most colourful, fragrant and chaotic market in London. Dozens of stalls selling cut flowers, potted plants, bulbs, seeds and trees — all at prices significantly below what you'd pay in a shop, with traders who actually know their plants. A London institution. Arrive early for the best selection, or late (after 2pm) for dramatic discounts."
+    href="https://www.columbiaroad.info"
+    tip="The street is narrow and gets extremely packed by 11am. Go at 8:30am for the first pick and a quiet coffee, or after 2pm when traders are selling off what they can't carry home. The surrounding independent shops open for the market too."
+  />
+
+  <!-- ── Vintage & antiques ───────────────── -->
+  <h2>Vintage, antiques & crafts</h2>
+
+  <PlaceCard
+    name="Portobello Road Market"
+    area="Notting Hill / Ladbroke Grove, W10/W11"
+    tags={["Antiques & Vintage", "Saturdays Best", "Iconic"]}
+    description="A mile-long street market that changes character as you walk along it — antiques and silverware at the Notting Hill end, fresh produce and street food in the middle, vintage clothing and bric-a-brac at the Ladbroke Grove end. Saturday is the full market with the antique dealers. Friday is smaller but quieter. The surrounding neighbourhood is beautiful to wander."
+    href="https://www.portobelloroad.co.uk"
+    tip="The serious antique dealers are at the Notting Hill (southern) end and are best early on Saturdays. Don't expect bargains — this is a tourist market and prices reflect it."
+  />
+
+  <PlaceCard
+    name="Brick Lane Market"
+    area="Shoreditch / Spitalfields, E1"
+    tags={["Vintage", "Sundays", "Street Food"]}
+    description="The Brick Lane area on Sundays is a sprawling, multi-site market experience — Upmarket in the Truman Brewery, Backyard Market, street stalls and dealers all around. Vintage clothing, records, furniture, art, street food from dozens of cuisines. At its best in the morning. The permanent Beigel Bake on Brick Lane itself is a 24-hour institution."
+    href="https://www.bricklanemarket.com"
+    tip="The Beigel Bake (the one with the yellow sign, not the newer one next door) has been open 24 hours for decades. Salt beef beigel at any hour for under £4. A London essential."
+  />
+
+  <PlaceCard
+    name="Spitalfields Market"
+    area="Spitalfields, E1"
+    tags={["Covered", "Thursday–Sunday", "Year-round"]}
+    description="A beautiful Victorian market hall in east London, open most days with fashion, vintage, art, gifts and food. Thursday and Friday are best for vintage and antiques. The surrounding area — with Hawksmoor's Christ Church immediately opposite — is one of London's most architecturally dramatic corners."
+    href="https://www.oldspitalfieldsmarket.com"
+    tip="The Antiques and Vintage Market on Thursdays draws serious dealers. If you're into finding interesting objects rather than new things, this is the day to go."
+  />
+
+  <!-- ── South of the river ──────────────── -->
+  <h2>South London</h2>
+
+  <PlaceCard
+    name="Brixton Market & Brixton Village"
+    area="Brixton, SW9"
+    tags={["Food", "Daily", "Community"]}
+    description="Not a market in the traditional weekend-only sense — Brixton's covered market arcades (Granville Arcade, now Brixton Village, and Market Row) are open most days, filled with independent food traders, cafés and shops representing cuisines from across Africa, the Caribbean, Latin America and beyond. One of the most diverse and community-rooted eating experiences in London."
+    href="https://www.brixtonmarket.net"
+    tip="The best time for food is Thursday–Saturday evenings when the restaurants are buzzing. A very different London to the tourist trail."
+  />
+
+</GuidePage>

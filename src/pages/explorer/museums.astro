@@ -1,0 +1,132 @@
+---
+import GuidePage from '../../layouts/GuidePage.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+---
+
+<GuidePage
+  title="Museums & Galleries in London"
+  description="The best museums and galleries in London for new arrivals — most of them free, all of them world-class. From the British Museum to hidden neighbourhood gems."
+  category="The Explorer"
+  categoryHref="/explorer"
+  heroBg="var(--sage-pale)"
+  readTime="5 min"
+  lastUpdated="May 2026"
+  mascotSrc="/mascots/explorer-museums.png"
+>
+
+  <p>
+    One of London's best-kept secrets — except it isn't really a secret — is that most of its
+    world-class museums are completely free. Not free on certain days, not free for under-12s.
+    Free. Always. This is an extraordinary thing, and as a new arrival you should take full
+    advantage of it.
+  </p>
+
+  <div class="callout callout--tip">
+    <span class="callout__heading">✦ Good to know</span>
+    <p>
+      Opening hours, temporary exhibition prices and booking requirements change. Always check
+      each museum's website before visiting, especially for blockbuster exhibitions which often
+      require timed tickets booked in advance.
+    </p>
+  </div>
+
+  <!-- ── South Kensington cluster ────────── -->
+  <h2>The South Kensington cluster</h2>
+
+  <p>
+    Three of the world's greatest museums sit within five minutes' walk of each other in
+    South Kensington. If you're new to London, this is where to start.
+  </p>
+
+  <PlaceCard
+    name="Natural History Museum"
+    area="South Kensington, SW7"
+    tags={["Free", "Indoor", "All ages"]}
+    description="One of London's most iconic buildings houses one of its best collections — dinosaur skeletons, a blue whale skeleton suspended from the ceiling, the Darwin Centre and the spectacular Hintze Hall. The building itself is as impressive as what's inside. Genuinely unmissable."
+    href="https://www.nhm.ac.uk"
+    tip="Go on a weekday morning to avoid the biggest crowds. The Wildlife Photographer of the Year exhibition (usually October–January) is worth the small ticket price."
+  />
+
+  <PlaceCard
+    name="Victoria and Albert Museum"
+    area="South Kensington, SW7"
+    tags={["Free", "Indoor", "Design & Art"]}
+    description="The world's greatest museum of art and design — 5,000 years of human creativity across fashion, furniture, jewellery, ceramics, textiles and photography. The permanent collection is enormous and free. A favourite for designers, artists and anyone who loves beautiful objects."
+    href="https://www.vam.ac.uk"
+    tip="The Cast Courts on the ground floor are surreal and unmissable — full-scale plaster casts of Michelangelo's David and Trajan's Column. Easy to miss if you don't look for them."
+  />
+
+  <PlaceCard
+    name="Science Museum"
+    area="South Kensington, SW7"
+    tags={["Free", "Indoor", "Technology"]}
+    description="From a piece of the Apollo 10 command module to the world's first jet engine to Crick and Watson's original DNA model — the Science Museum's permanent galleries are genuinely spectacular. The history of space exploration, medicine and computing all under one roof."
+    href="https://www.sciencemuseum.org.uk"
+    tip="The Exploring Space gallery on the ground floor is free and consistently the best room. IMAX tickets cost extra but are worth it for the right film."
+  />
+
+  <!-- ── Central London ──────────────────── -->
+  <h2>Central London</h2>
+
+  <PlaceCard
+    name="British Museum"
+    area="Bloomsbury, WC1"
+    tags={["Free", "Indoor", "History"]}
+    description="Two million years of human history in one place. The Rosetta Stone, the Elgin Marbles, the Lewis Chessmen, Egyptian mummies, Sutton Hoo helmet. There is genuinely nothing else like it. Allow a full day — or three. The Great Court is one of the most beautiful spaces in London."
+    href="https://www.britishmuseum.org"
+    tip="The museum is huge and navigating without a plan is overwhelming. Pick two or three rooms to visit properly rather than rushing through everything. Free map at the entrance."
+  />
+
+  <PlaceCard
+    name="National Gallery"
+    area="Trafalgar Square, WC2"
+    tags={["Free", "Indoor", "Fine Art"]}
+    description="Over 2,300 paintings spanning 700 years of European art — Botticelli, da Vinci, Vermeer, Monet, Van Gogh, Seurat. All free, all on permanent display. On the edge of Trafalgar Square, making it an easy addition to any central London day."
+    href="https://www.nationalgallery.org.uk"
+    tip="Room 43 has Van Gogh's Sunflowers and Seurat's Bathers at Asnières side by side. It never gets old."
+  />
+
+  <PlaceCard
+    name="National Portrait Gallery"
+    area="Trafalgar Square, WC2"
+    tags={["Free", "Indoor", "Portraits"]}
+    description="Portraits of everyone who has shaped British history and culture — from Tudor monarchs to contemporary artists, activists and sportspeople. Reopened in 2023 after a major renovation. Often less crowded than the National Gallery next door and genuinely fascinating."
+    href="https://www.npg.org.uk"
+    tip="The rooftop restaurant has one of the best views of Trafalgar Square. Worth a coffee even if you're not eating."
+  />
+
+  <!-- ── Hidden gems ─────────────────────── -->
+  <h2>The hidden gems</h2>
+
+  <p>
+    Once you've done the big names, these are the ones that make you feel like you know London.
+  </p>
+
+  <PlaceCard
+    name="Sir John Soane's Museum"
+    area="Holborn, WC2"
+    tags={["Free", "Indoor", "Architecture"]}
+    description="The private home and collection of architect Sir John Soane, preserved exactly as it was when he died in 1837. Ancient Egyptian sarcophagi, Hogarth paintings, fragments of classical architecture crammed into every corner. Small, completely bizarre, utterly extraordinary. One of London's best-kept secrets — except it's very much not a secret."
+    href="https://www.soane.org"
+    tip="Go on the first Tuesday evening of the month when it's open until 9pm and lit by candlelight. Booking required."
+  />
+
+  <PlaceCard
+    name="Wallace Collection"
+    area="Marylebone, W1"
+    tags={["Free", "Indoor", "Fine Art & Armour"]}
+    description="A jaw-dropping private art collection in a townhouse off Oxford Street — Rembrandt, Rubens, Velázquez, Fragonard, Titian, plus one of the finest collections of medieval arms and armour in the world. Uncrowded and underrated. The atrium restaurant is beautiful."
+    href="https://www.wallacecollection.org"
+    tip="Most visitors walk straight to the paintings and miss the armour on the ground floor. Don't."
+  />
+
+  <PlaceCard
+    name="Tate Modern"
+    area="Bankside, SE1"
+    tags={["Free", "Indoor", "Modern Art"]}
+    description="The permanent collection of modern and contemporary art in a converted power station on the South Bank is free — only the ticketed exhibitions cost. The Turbine Hall installations are always worth seeing, and the building itself is spectacular. Pair it with a walk along the Thames."
+    href="https://www.tate.org.uk/visit/tate-modern"
+    tip="The free permanent collection is split across the Blavatnik Building and Natalie Bell Building. The viewing terrace on level 10 of the Blavatnik Building has one of the best views of London and is free."
+  />
+
+</GuidePage>

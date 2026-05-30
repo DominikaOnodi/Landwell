@@ -1,0 +1,141 @@
+---
+// PartnerCard.astro
+// The commercial building block — works as editorial recommendation now,
+// flips to affiliate/sponsored with a single prop change later.
+interface Props {
+  name:          string;
+  tagline:       string;
+  description?:  string;
+  badge?:        string;
+  href:          string;
+  affiliateHref?: string;   // swap in the real affiliate URL when live
+  ctaText?:      string;
+  sponsored?:    boolean;   // true = shows "Sponsored" label + disclosure
+}
+
+const {
+  name,
+  tagline,
+  description,
+  badge,
+  href,
+  affiliateHref,
+  ctaText = "Learn more →",
+  sponsored = false,
+} = Astro.props;
+
+const destination = affiliateHref ?? href;
+---
+
+<div class={`partner-card ${sponsored ? "partner-card--sponsored" : ""}`}>
+  <div class="partner-card__top">
+    {sponsored
+      ? <span class="partner-card__label partner-card__label--sponsored">Sponsored</span>
+      : badge
+        ? <span class="partner-card__label partner-card__label--badge">{badge}</span>
+        : null
+    }
+    <h3 class="partner-card__name">{name}</h3>
+    <p class="partner-card__tagline">{tagline}</p>
+    {description && <p class="partner-card__desc">{description}</p>}
+  </div>
+  <a
+    href={destination}
+    class="partner-card__cta"
+    target="_blank"
+    rel={sponsored ? "noopener noreferrer sponsored" : "noopener noreferrer"}
+    aria-label={`Visit ${name}`}
+  >
+    {ctaText}
+  </a>
+</div>
+
+<style>
+  .partner-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    background: var(--cream-dark);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8) var(--space-10);
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+
+  .partner-card:hover {
+    background: #dad3c5;
+    transform: translateY(-2px);
+  }
+
+  .partner-card--sponsored {
+    background: var(--terracotta-pale);
+    outline: 1.5px solid rgba(200, 121, 65, 0.35);
+  }
+
+  .partner-card__top {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .partner-card__label {
+    display: inline-block;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: var(--radius-full);
+    align-self: flex-start;
+  }
+
+  .partner-card__label--badge {
+    background: var(--sage-pale);
+    color: var(--sage);
+  }
+
+  .partner-card__label--sponsored {
+    background: var(--terracotta);
+    color: white;
+  }
+
+  .partner-card__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-weight: 500;
+    color: var(--sage);
+    line-height: 1.1;
+  }
+
+  .partner-card__tagline {
+    font-size: var(--text-base);
+    font-weight: 500;
+    color: var(--text-dark);
+    max-width: 100%;
+  }
+
+  .partner-card__desc {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    line-height: 1.65;
+    max-width: 100%;
+  }
+
+  .partner-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-full);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    background: var(--sage);
+    color: white;
+    text-decoration: none;
+    transition: background 0.2s ease;
+    align-self: flex-start;
+  }
+
+  .partner-card__cta:hover {
+    background: var(--terracotta);
+  }
+</style>

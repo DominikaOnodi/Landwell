@@ -1,0 +1,22 @@
+---
+import MascotPage from '../layouts/MascotPage.astro';
+---
+
+<MascotPage
+  id="anchor"
+  name="The Anchor"
+  tagline="Build your life here."
+  image="/mascots/anchor.png"
+  imageAlt="The Anchor — a cosy potato with a warm mug and a plant"
+  bg="var(--terracotta-pale)"
+  categories={[
+    { label: "Visas & Immigration", icon: "📋", href: "/anchor/visas" },
+    { label: "Renting a Home",      icon: "🏠", href: "/anchor/renting" },
+    { label: "Healthcare",          icon: "🏥", href: "/anchor/healthcare" },
+    { label: "Banking",             icon: "🏦", href: "/anchor/banking" },
+    { label: "Insurance",           icon: "🛡️", href: "#" },
+    { label: "Moving Checklist",    icon: "✅", href: "/anchor/moving-checklist" },
+    { label: "Jobs & Work",         icon: "💼", href: "#" },
+    { label: "Practical Guides",    icon: "📚", href: "#" },
+  ]}
+/>

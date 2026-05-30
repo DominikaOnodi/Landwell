@@ -1,0 +1,110 @@
+---
+import GuidePage from '../../layouts/GuidePage.astro';
+import PlaceCard from '../../components/PlaceCard.astro';
+---
+
+<GuidePage
+  title="Parks & Green Spaces in London"
+  description="London has more green space per person than almost any other major city. Here's where to find your version of it — from wild swimming on the Heath to deer in Richmond Park."
+  category="The Explorer"
+  categoryHref="/explorer"
+  heroBg="var(--sage-pale)"
+  readTime="5 min"
+  lastUpdated="May 2026"
+  mascotSrc="/mascots/explorer-parks.png"
+>
+
+  <p>
+    About 47% of London is green space — parks, gardens, heathland, commons and nature reserves.
+    For a city of nine million people, it's remarkable. Whether you want a quiet bench, a long
+    walk, a swim, or an afternoon in the sun, London delivers. Here are the green spaces worth
+    knowing.
+  </p>
+
+  <!-- ── Royal parks ─────────────────────── -->
+  <h2>The Royal Parks</h2>
+
+  <p>
+    Eight parks in central and west London are managed by the Royal Parks charity — all free,
+    all beautifully maintained.
+  </p>
+
+  <PlaceCard
+    name="Hyde Park"
+    area="Hyde Park Corner / Bayswater, W2"
+    tags={["Free", "Outdoor", "Central"]}
+    description="350 acres in the heart of London. The Serpentine Lake (rowing boats to hire in summer), the Serpentine and Serpentine North Galleries, Speakers' Corner on Sunday mornings where anyone can stand and say anything, and a programme of summer concerts and events. One of the first places you should go."
+    href="https://www.royalparks.org.uk/parks/hyde-park"
+    tip="Speakers' Corner on a Sunday morning is one of London's most entertaining and completely free experiences. Genuinely chaotic and wonderful."
+  />
+
+  <PlaceCard
+    name="Regent's Park"
+    area="Regent's Park, NW1"
+    tags={["Free", "Outdoor", "Gardens"]}
+    description="410 acres with Queen Mary's Rose Garden (stunning in June), an open-air theatre, a boating lake, and the zoo immediately adjacent. More manicured than Hyde Park but equally loved. The Inner Circle path around the rose garden is one of London's most peaceful walks."
+    href="https://www.royalparks.org.uk/parks/the-regents-park"
+    tip="The Open Air Theatre (usually May–September) runs Shakespeare, musicals and contemporary theatre in a gorgeous setting. Book well in advance — it sells out."
+  />
+
+  <PlaceCard
+    name="St James's Park"
+    area="Westminster, SW1"
+    tags={["Free", "Outdoor", "Central"]}
+    description="The most central Royal Park — between Buckingham Palace and Whitehall. Famous for the resident pelicans (fed daily around 2:30pm near Duck Island), the bridge with its view of Buckingham Palace, and the sheer improbability of being this wild and quiet within walking distance of Parliament."
+    href="https://www.royalparks.org.uk/parks/st-jamess-park"
+    tip="The pelican feeding is a free London ritual. Check the park's Twitter/X for the current feeding time before you go."
+  />
+
+  <!-- ── Beyond the centre ───────────────── -->
+  <h2>Further afield — worth the journey</h2>
+
+  <PlaceCard
+    name="Hampstead Heath"
+    area="Hampstead / Gospel Oak, NW3–NW5"
+    tags={["Free", "Outdoor", "Wild", "Swimming"]}
+    description="790 acres of ancient heathland in north London — hilly, wild and completely unlike the formal Royal Parks. Parliament Hill has the best panoramic view of the London skyline. The three outdoor swimming ponds (men's, women's and mixed) are open year-round and are one of London's most beloved institutions. A place to clear your head."
+    href="https://www.cityoflondon.gov.uk/things-to-do/green-spaces/hampstead-heath"
+    tip="The ponds are cold (even in summer). The mixed pond has a small fee; the single-sex ponds are free. Early morning swimmers swear it changes your life. Try it at least once."
+  />
+
+  <PlaceCard
+    name="Richmond Park"
+    area="Richmond, SW15/TW10"
+    tags={["Free", "Outdoor", "Wildlife"]}
+    description="2,500 acres of ancient parkland — the largest Royal Park. Home to 630 red and fallow deer who roam freely and ignore humans almost entirely. Completely wild, completely stunning. The Isabella Plantation is beautiful in spring (rhododendrons). A world away from central London and only 30–40 minutes by train."
+    href="https://www.royalparks.org.uk/parks/richmond-park"
+    tip="Stay in your car or give the deer plenty of space, especially during rutting season (October) when the stags are unpredictable. The park is also a favourite for cyclists — there's a dedicated cycling route."
+  />
+
+  <PlaceCard
+    name="Victoria Park"
+    area="Hackney / Bow, E3"
+    tags={["Free", "Outdoor", "East London"]}
+    description="East London's 'People's Park' — 213 acres with two lakes, a lido (outdoor swimming pool, seasonal), boating, a model boating lake and fantastic summer festivals including All Points East. If you live in east London, this will become your park."
+    href="https://www.towerhamlets.gov.uk/lgnl/leisure_and_culture/parks_and_open_spaces/victoria_park"
+    tip="The Saturday farmers' market near the Victoria Gate entrance is one of east London's best. Small, local, friendly."
+  />
+
+  <!-- ── Neighbourhood favourites ────────── -->
+  <h2>Neighbourhood favourites</h2>
+
+  <PlaceCard
+    name="Primrose Hill"
+    area="Primrose Hill, NW1/NW3"
+    tags={["Free", "Outdoor", "Views"]}
+    description="A small hill — but the view from the top is one of London's most famous. The entire city skyline spread out in front of you on a clear day, from The Shard to Canary Wharf to the BT Tower. The neighbourhood surrounding it (also called Primrose Hill) is one of London's most charming — good cafés, independent shops, a village feel."
+    href="https://www.royalparks.org.uk/parks/the-regents-park/things-to-see-and-do/primrose-hill"
+    tip="Sunset here, with the skyline in silhouette, is one of those London moments. Bring a picnic."
+  />
+
+  <PlaceCard
+    name="Battersea Park"
+    area="Battersea, SW11"
+    tags={["Free", "Outdoor", "South London"]}
+    description="200 acres on the south bank of the Thames. Boating lake, a contemporary art gallery (Pump House Gallery, free), river views across to Chelsea, and the Peace Pagoda — a Japanese Buddhist stupa donated to London in 1985. A great introduction to south London."
+    href="https://www.batterseapark.org"
+    tip="The weekend at Battersea Park is a proper south London ritual — long brunches, kids, dogs, people of all descriptions. The riverside walk west towards Albert Bridge is lovely."
+  />
+
+</GuidePage>
