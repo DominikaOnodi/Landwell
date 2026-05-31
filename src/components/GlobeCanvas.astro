@@ -1,0 +1,516 @@
+---
+// GlobeCanvas.astro — self-contained interactive Earth globe
+// Pure Canvas + vanilla JS. No CDN. No npm imports in browser.
+// World data served from /world-110m.json (already in public/).
+// navigatable=true  → click UK/UAE zooms + shows "Explore" card
+// navigatable=false → decorative spin + drag only
+
+interface Props {
+  navigatable?: boolean;
+}
+const { navigatable = true } = Astro.props;
+---
+
+<div class="gvc-root" data-nav={String(navigatable)}>
+  <canvas class="gvc-canvas"></canvas>
+  <div class="gvc-card-slot"></div>
+</div>
+
+<script is:inline>
+(function () {
+
+  /* ── Find this globe's root ─────────────────────────────── */
+  const roots = document.querySelectorAll('.gvc-root:not([data-init])');
+  if (!roots.length) return;
+  const ROOT = roots[roots.length - 1];
+  ROOT.dataset.init = '1';
+
+  const CANVAS    = ROOT.querySelector('.gvc-canvas');
+  const CARD_SLOT = ROOT.querySelector('.gvc-card-slot');
+  const CAN_NAV   = ROOT.dataset.nav === 'true';
+
+  /* ── Canvas / context ───────────────────────────────────── */
+  const DPR  = Math.min(window.devicePixelRatio || 1, 2);
+  const SIZE = 600;                          // logical drawing size
+  CANVAS.width  = SIZE * DPR;
+  CANVAS.height = SIZE * DPR;
+  CANVAS.style.width       = '100%';
+  CANVAS.style.height      = 'auto';
+  CANVAS.style.aspectRatio = '1';
+  CANVAS.style.cursor      = 'grab';
+
+  const ctx = CANVAS.getContext('2d');
+  ctx.scale(DPR, DPR);
+
+  const CX = SIZE / 2;
+  const CY = SIZE / 2;
+  const BASE_SC = SIZE * 0.46;
+  const ZOOM_SC = SIZE * 0.77;
+
+  /* ── Globe state ────────────────────────────────────────── */
+  let scale    = BASE_SC;
+  let rotLon   = -20;    // longitude rotation (degrees) — starts on Europe
+  let rotLat   = -25;    // latitude tilt      (degrees)
+  let spinning  = true;
+  let dragging  = false;
+  let animating = false;
+  let idleAt    = Date.now();
+
+  /* ── City data (ISO-3166 numeric IDs) ───────────────────── */
+  const CITIES = {
+    826: { name: 'London', sub: 'United Kingdom',       href: '/london', lon: -0.1, lat: 51.5 },
+    784: { name: 'Dubai',  sub: 'United Arab Emirates', href: '/dubai',  lon: 55.3, lat: 25.2 },
+  };
+
+  /* ── TopoJSON → rings of [lon, lat] points ──────────────── */
+  function buildCountries(topo) {
+    var sc = topo.transform.scale;
+    var tr = topo.transform.translate;
+
+    function decodeArc(i) {
+      var src = topo.arcs[i < 0 ? ~i : i];
+      var x = 0, y = 0;
+      var pts = src.map(function(d) {
+        x += d[0]; y += d[1];
+        return [x * sc[0] + tr[0], y * sc[1] + tr[1]];
+      });
+      if (i < 0) pts.reverse();
+      return pts;
+    }
+
+    function decodeRing(indices) {
+      var out = [];
+      for (var k = 0; k < indices.length; k++) {
+        var arc = decodeArc(indices[k]);
+        for (var j = 0; j < arc.length - 1; j++) out.push(arc[j]);
+      }
+      return out;
+    }
+
+    return topo.objects.countries.geometries.map(function(g) {
+      var polys;
+      if (g.type === 'Polygon') {
+        polys = [g.arcs.map(decodeRing)];
+      } else if (g.type === 'MultiPolygon') {
+        polys = g.arcs.map(function(p) { return p.map(decodeRing); });
+      } else {
+        polys = [];
+      }
+      return { id: Number(g.id), polys: polys };
+    });
+  }
+
+  /* ── Orthographic projection ────────────────────────────── */
+  //  lon/lat → screen [x, y]  or  null (behind globe)
+  function project(lon, lat) {
+    var PI    = Math.PI;
+    var lam   = (lon + rotLon) * PI / 180;
+    var phi   = lat * PI / 180;
+    var rPhi  = rotLat * PI / 180;
+
+    var cosP  = Math.cos(phi);
+    var sinP  = Math.sin(phi);
+    var cosL  = Math.cos(lam);
+    var sinL  = Math.sin(lam);
+
+    // 3-D position on unit sphere (longitude already rotated via lam)
+    var x0 = cosP * cosL;   // depth
+    var y0 = cosP * sinL;   // screen-x (east = right)
+    var z0 = sinP;           // screen-y (north = up)
+
+    // Tilt around horizontal axis (latitude rotation)
+    var cosR = Math.cos(-rPhi);
+    var sinR = Math.sin(-rPhi);
+    var x1   = x0 * cosR - z0 * sinR;
+    var z1   = x0 * sinR + z0 * cosR;
+    var y1   = y0;
+
+    if (x1 < 0) return null;   // back-face
+
+    return [CX + y1 * scale, CY - z1 * scale];
+  }
+
+  /* ── Drawing ────────────────────────────────────────────── */
+  function drawOcean() {
+    var g = ctx.createRadialGradient(CX * 0.72, CY * 0.72, 0, CX, CY, scale);
+    g.addColorStop(0, '#1e3826');
+    g.addColorStop(1, '#0a180e');
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+
+  function drawLighting() {
+    // Highlight
+    var hl = ctx.createRadialGradient(CX - scale * 0.3, CY - scale * 0.3, 0, CX, CY, scale);
+    hl.addColorStop(0,    'rgba(255,255,255,0.17)');
+    hl.addColorStop(0.5,  'rgba(255,255,255,0)');
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale, 0, Math.PI * 2);
+    ctx.fillStyle = hl;
+    ctx.fill();
+
+    // Shadow
+    var sh = ctx.createRadialGradient(CX + scale * 0.35, CY + scale * 0.35, scale * 0.1, CX, CY, scale);
+    sh.addColorStop(0,   'rgba(0,0,0,0.5)');
+    sh.addColorStop(0.5, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale, 0, Math.PI * 2);
+    ctx.fillStyle = sh;
+    ctx.fill();
+  }
+
+  function drawGlow() {
+    var g = ctx.createRadialGradient(CX, CY, scale - 2, CX, CY, scale + 36);
+    g.addColorStop(0,   'rgba(200,121,65,0.28)');
+    g.addColorStop(1,   'rgba(200,121,65,0)');
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale + 36, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+
+  function drawGraticule() {
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.lineWidth   = 0.5;
+    var pt, first;
+
+    for (var lat = -60; lat <= 60; lat += 30) {
+      first = true;
+      for (var lon = -180; lon <= 180; lon += 3) {
+        pt = project(lon, lat);
+        if (pt) { first ? ctx.moveTo(pt[0], pt[1]) : ctx.lineTo(pt[0], pt[1]); first = false; }
+        else first = true;
+      }
+    }
+    for (var lon2 = -180; lon2 < 180; lon2 += 30) {
+      first = true;
+      for (var lat2 = -89; lat2 <= 89; lat2 += 3) {
+        pt = project(lon2, lat2);
+        if (pt) { first ? ctx.moveTo(pt[0], pt[1]) : ctx.lineTo(pt[0], pt[1]); first = false; }
+        else first = true;
+      }
+    }
+    ctx.stroke();
+  }
+
+  var activeCountryPaths = {};   // id → Path2D (rebuilt each frame)
+
+  function drawCountries(list) {
+    activeCountryPaths = {};
+    for (var ci = 0; ci < list.length; ci++) {
+      var c       = list[ci];
+      var isAct   = Boolean(CITIES[c.id]);
+      var path    = new Path2D();
+      var hasVis  = false;
+
+      for (var pi = 0; pi < c.polys.length; pi++) {
+        var poly = c.polys[pi];
+        for (var ri = 0; ri < poly.length; ri++) {
+          var ring  = poly[ri];
+          var first = true;
+          for (var vi = 0; vi < ring.length; vi++) {
+            var pt = project(ring[vi][0], ring[vi][1]);
+            if (pt) {
+              first ? path.moveTo(pt[0], pt[1]) : path.lineTo(pt[0], pt[1]);
+              first  = false;
+              hasVis = true;
+            } else { first = true; }
+          }
+        }
+      }
+
+      if (!hasVis) continue;
+
+      ctx.fillStyle   = isAct ? '#3e5e42' : '#243529';
+      ctx.strokeStyle = isAct ? '#29402c' : '#192a1e';
+      ctx.lineWidth   = 0.4;
+      ctx.fill(path, 'evenodd');
+      ctx.stroke(path);
+
+      if (isAct) activeCountryPaths[c.id] = path;
+    }
+  }
+
+  function drawMarkers() {
+    var t = (Date.now() % 2400) / 2400;
+    var ids = Object.keys(CITIES);
+    for (var i = 0; i < ids.length; i++) {
+      var city = CITIES[ids[i]];
+      var pt   = project(city.lon, city.lat);
+      if (!pt) continue;
+
+      // Pulse ring
+      ctx.beginPath();
+      ctx.arc(pt[0], pt[1], 5 + t * 11, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(200,121,65,' + (0.65 * (1 - t)) + ')';
+      ctx.fill();
+
+      // Solid dot
+      ctx.beginPath();
+      ctx.arc(pt[0], pt[1], 5.5, 0, Math.PI * 2);
+      ctx.fillStyle   = '#c87941';
+      ctx.fill();
+      ctx.strokeStyle = 'white';
+      ctx.lineWidth   = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  /* ── Full render frame ──────────────────────────────────── */
+  var countries = [];
+
+  function render() {
+    ctx.clearRect(0, 0, SIZE, SIZE);
+
+    drawGlow();
+
+    // Clip all land drawing to the sphere circle
+    ctx.save();
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale, 0, Math.PI * 2);
+    ctx.clip();
+
+    drawOcean();
+    drawGraticule();
+    drawCountries(countries);
+
+    ctx.restore();      // remove clip
+
+    drawLighting();     // lighting overlay (outside clip so it covers edge)
+    drawMarkers();      // markers on top of everything
+  }
+
+  /* ── Animation loop ─────────────────────────────────────── */
+  (function loop() {
+    if (spinning && !dragging && !animating && Date.now() - idleAt > 2500) {
+      rotLon += 0.08;
+    }
+    render();
+    requestAnimationFrame(loop);
+  })();
+
+  /* ── Drag ───────────────────────────────────────────────── */
+  var dX0 = 0, dY0 = 0, dLon0 = 0, dLat0 = 0;
+
+  function startDrag(cx, cy) {
+    dragging = true;
+    spinning = false;
+    idleAt   = Date.now();
+    dX0 = cx; dY0 = cy; dLon0 = rotLon; dLat0 = rotLat;
+    CANVAS.style.cursor = 'grabbing';
+  }
+  function moveDrag(cx, cy) {
+    if (!dragging) return;
+    rotLon = dLon0 + (cx - dX0) * 0.28;
+    rotLat = Math.max(-78, Math.min(78, dLat0 - (cy - dY0) * 0.28));
+  }
+  function endDrag() {
+    dragging = false;
+    CANVAS.style.cursor = 'grab';
+    idleAt = Date.now();
+    setTimeout(function() { spinning = true; }, 3000);
+  }
+
+  CANVAS.addEventListener('mousedown', function(e) {
+    if (CAN_NAV && hitTestCountry(e)) return;
+    startDrag(e.clientX, e.clientY);
+  });
+  window.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
+  window.addEventListener('mouseup',   function()   { if (dragging) endDrag(); });
+
+  CANVAS.addEventListener('touchstart', function(e) {
+    startDrag(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  CANVAS.addEventListener('touchmove', function(e) {
+    moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+  }, { passive: true });
+  CANVAS.addEventListener('touchend', function() { endDrag(); }, { passive: true });
+
+  /* ── Click / hit-test ───────────────────────────────────── */
+  function getLogical(e) {
+    var r = CANVAS.getBoundingClientRect();
+    return [
+      (e.clientX - r.left) * SIZE / r.width,
+      (e.clientY - r.top)  * SIZE / r.height,
+    ];
+  }
+
+  function hitTestCountry(e) {
+    var lp  = getLogical(e);
+    var lx  = lp[0], ly = lp[1];
+    var ids = Object.keys(activeCountryPaths);
+    for (var i = 0; i < ids.length; i++) {
+      if (ctx.isPointInPath(activeCountryPaths[ids[i]], lx, ly, 'evenodd')) return Number(ids[i]);
+    }
+    return 0;
+  }
+
+  CANVAS.addEventListener('click', function(e) {
+    if (!CAN_NAV || dragging || animating) return;
+
+    // 1. Country shape click
+    var countryId = hitTestCountry(e);
+    if (countryId && CITIES[countryId]) { selectCity(countryId); return; }
+
+    // 2. Near a city marker (30px radius)
+    var lp = getLogical(e);
+    var ids = Object.keys(CITIES);
+    for (var i = 0; i < ids.length; i++) {
+      var city = CITIES[ids[i]];
+      var pt   = project(city.lon, city.lat);
+      if (!pt) continue;
+      if (Math.hypot(lp[0] - pt[0], lp[1] - pt[1]) < 30) { selectCity(Number(ids[i])); return; }
+    }
+  });
+
+  /* ── Smooth animate (rotation + zoom) ──────────────────── */
+  function eio(t) { return t < 0.5 ? 4*t*t*t : 1 - Math.pow(-2*t+2,3)/2; }
+
+  function animateTo(tLon, tLat, tScale, ms, done) {
+    animating = true;
+    var sLon = rotLon, sLat = rotLat, sSc = scale;
+    var t0   = null;
+
+    (function frame(ts) {
+      if (!t0) t0 = ts;
+      var raw = Math.min((ts - t0) / ms, 1);
+      var t   = eio(raw);
+      rotLon  = sLon + (tLon   - sLon) * t;
+      rotLat  = sLat + (tLat   - sLat) * t;
+      scale   = sSc  + (tScale - sSc)  * t;
+      if (raw < 1) requestAnimationFrame(frame);
+      else { animating = false; if (done) done(); }
+    })(performance.now());
+  }
+
+  /* ── City select ────────────────────────────────────────── */
+  function selectCity(id) {
+    if (animating) return;
+    var city = CITIES[id];
+    if (!city) return;
+    spinning = false;
+    animateTo(-city.lon, -city.lat, ZOOM_SC, 950, function() { showCard(city); });
+  }
+
+  function showCard(city) {
+    CARD_SLOT.innerHTML =
+      '<div class="gvc-card">' +
+        '<button class="gvc-back">← Back to globe</button>' +
+        '<p class="gvc-eyebrow">You\'re looking at</p>' +
+        '<h3 class="gvc-name">' + city.name + '</h3>' +
+        '<p class="gvc-sub">'  + city.sub  + '</p>' +
+        '<a href="' + city.href + '" class="gvc-cta">Explore ' + city.name + ' →</a>' +
+      '</div>';
+
+    CARD_SLOT.querySelector('.gvc-back').addEventListener('click', function() {
+      CARD_SLOT.innerHTML = '';
+      animateTo(-20, -25, BASE_SC, 750, function() {
+        setTimeout(function() { spinning = true; }, 1200);
+      });
+    });
+  }
+
+  /* ── Load world data then start ─────────────────────────── */
+  fetch('/world-110m.json')
+    .then(function(r) { return r.json(); })
+    .then(function(topo) {
+      countries = buildCountries(topo);
+    })
+    .catch(function(e) { console.error('[GlobeCanvas] world data error:', e); });
+
+  // Loop starts immediately (shows ocean while data loads)
+
+})();
+</script>
+
+<style>
+  .gvc-root {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-8);
+    width: 100%;
+  }
+
+  .gvc-canvas {
+    display: block;
+    border-radius: 50%;
+    filter:
+      drop-shadow(0 0 40px rgba(200, 121, 65, 0.3))
+      drop-shadow(0 24px 64px rgba(0, 0, 0, 0.5));
+  }
+
+  /* ── City card ───────────────────────────── */
+  .gvc-card-slot { width: 100%; max-width: 360px; }
+
+  .gvc-card {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-6) var(--space-8) var(--space-8);
+    box-shadow: var(--shadow-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    animation: gvc-in 0.4s cubic-bezier(0.22,1,0.36,1) both;
+  }
+
+  @keyframes gvc-in {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)    scale(1);    }
+  }
+
+  .gvc-back {
+    background: none;
+    border: none;
+    padding: 0;
+    margin-bottom: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--text-light);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: color 0.2s;
+  }
+  .gvc-back:hover { color: var(--sage); }
+
+  .gvc-eyebrow {
+    font-size: var(--text-xs);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-light);
+  }
+
+  .gvc-name {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-3xl), 6vw, var(--text-5xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1;
+  }
+
+  .gvc-sub {
+    font-size: var(--text-sm);
+    color: var(--text-medium);
+    margin-bottom: var(--space-2);
+  }
+
+  .gvc-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-7);
+    background: var(--sage);
+    color: var(--cream);
+    border-radius: var(--radius-full);
+    text-decoration: none;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    align-self: flex-start;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .gvc-cta:hover { background: var(--terracotta); transform: translateY(-2px); }
+</style>

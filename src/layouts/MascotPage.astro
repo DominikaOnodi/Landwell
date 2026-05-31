@@ -3,6 +3,7 @@
 import Layout from './Layout.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import GlobeCanvas from '../components/GlobeCanvas.astro';
 
 interface Props {
   id:          string;        // "explorer" | "anchor" | "connector"
@@ -92,24 +93,7 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
       </div>
 
       <div class="mascot-globe__stage">
-        <div class="mp-globe">
-          <div class="mp-globe__surface" aria-hidden="true"></div>
-          <div class="mp-globe__depth"   aria-hidden="true"></div>
-          {activeCities.map((city) => (
-            <a
-              href={city.href}
-              class="mp-globe__pin"
-              style={`--pin-x: ${city.pinX}; --pin-y: ${city.pinY};`}
-              aria-label={`Switch to ${city.name}`}
-            >
-              <span class="mp-globe__pin-marker" aria-hidden="true">
-                <span class="mp-globe__pin-pulse"></span>
-                <span class="mp-globe__pin-dot"></span>
-              </span>
-              <span class="mp-globe__pin-label">{city.name}</span>
-            </a>
-          ))}
-        </div>
+        <GlobeCanvas navigatable={false} />
       </div>
 
       <div class="mascot-globe__cities">

@@ -1,12 +1,5 @@
 ---
-// MapSection.astro — World globe with city pins.
-// Pure CSS globe — no JavaScript required, guaranteed to work.
-// To add a city: duplicate a .globe__pin block and adjust --pin-x / --pin-y.
-
-const activeCities = [
-  { name: "London", href: "/london", pinX: "49%", pinY: "31%" },
-  { name: "Dubai",  href: "/dubai",  pinX: "63%", pinY: "41%" },
-];
+import GlobeCanvas from './GlobeCanvas.astro';
 
 const comingSoonCities = [
   { name: "Lisbon"    },
@@ -27,34 +20,7 @@ const comingSoonCities = [
     </div>
 
     <div class="globe-stage">
-
-      <!-- Decorative sparkles -->
-      <span class="gs gs--tl" aria-hidden="true">✦</span>
-      <span class="gs gs--tr" aria-hidden="true">✦</span>
-      <span class="gs gs--br" aria-hidden="true">✦</span>
-
-      <div class="globe" aria-label="World map" role="img">
-        <!-- Spinning surface grid -->
-        <div class="globe__surface" aria-hidden="true"></div>
-        <!-- Sphere lighting overlay -->
-        <div class="globe__depth"   aria-hidden="true"></div>
-
-        <!-- City pins -->
-        {activeCities.map((city) => (
-          <a
-            href={city.href}
-            class="globe__pin"
-            style={`--pin-x: ${city.pinX}; --pin-y: ${city.pinY};`}
-            aria-label={`Explore ${city.name}`}
-          >
-            <span class="globe__pin-marker" aria-hidden="true">
-              <span class="globe__pin-pulse"></span>
-              <span class="globe__pin-dot"></span>
-            </span>
-            <span class="globe__pin-label">{city.name}</span>
-          </a>
-        ))}
-      </div>
+      <GlobeCanvas navigatable={true} />
     </div>
 
     <!-- Coming soon chips -->
@@ -105,152 +71,9 @@ const comingSoonCities = [
 
   /* ── Globe stage ─────────────────────────── */
   .globe-stage {
-    position: relative;
-    display: flex;
-    justify-content: center;
-    margin-bottom: var(--space-16);
-  }
-
-  /* Sparkles */
-  .gs {
-    position: absolute;
-    color: var(--terracotta);
-    pointer-events: none;
-    user-select: none;
-    animation: gs-float 5s ease-in-out infinite;
-  }
-  .gs--tl { top: 6%;     left:  8%;  font-size: 1.1rem;  opacity: 0.32; animation-delay: 0s;   }
-  .gs--tr { top: 4%;     right: 7%;  font-size: 0.75rem; opacity: 0.22; animation-delay: 1.5s; }
-  .gs--br { bottom: 10%; right: 9%;  font-size: 0.9rem;  opacity: 0.28; animation-delay: 3s;   }
-
-  @keyframes gs-float {
-    0%, 100% { transform: translateY(0); }
-    50%       { transform: translateY(-7px); }
-  }
-
-  /* ── Globe ───────────────────────────────── */
-  .globe {
-    width: clamp(280px, 52vw, 420px);
-    height: clamp(280px, 52vw, 420px);
-    border-radius: 50%;
-    position: relative;
-    overflow: hidden;
-    box-shadow:
-      inset -44px -28px 80px rgba(0, 0, 0, 0.38),
-      inset 20px 16px 48px rgba(255, 255, 255, 0.07),
-      0 32px 90px rgba(61, 90, 64, 0.32),
-      0 0 0 2px rgba(61, 90, 64, 0.2);
-  }
-
-  /* Base fill */
-  .globe::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(145deg, #4e7352 0%, #3D5A40 45%, #2b4030 100%);
-    z-index: 0;
-  }
-
-  /* Animated grid surface */
-  .globe__surface {
-    position: absolute;
-    inset: 0;
-    z-index: 1;
-    background-image:
-      repeating-linear-gradient(
-        0deg,
-        transparent, transparent 28px,
-        rgba(255, 255, 255, 0.11) 28px, rgba(255, 255, 255, 0.11) 29px
-      ),
-      repeating-linear-gradient(
-        90deg,
-        transparent, transparent 28px,
-        rgba(255, 255, 255, 0.11) 28px, rgba(255, 255, 255, 0.11) 29px
-      );
-    animation: globe-spin 20s linear infinite;
-  }
-
-  @keyframes globe-spin {
-    from { background-position: 0 0, 0 0; }
-    to   { background-position: 0 0, 58px 0; }
-  }
-
-  /* Lighting depth overlay */
-  .globe__depth {
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    z-index: 2;
-    background:
-      radial-gradient(circle at 30% 25%, rgba(255, 255, 255, 0.2) 0%, transparent 52%),
-      radial-gradient(circle at 75% 78%, rgba(0, 0, 0, 0.42) 0%, transparent 44%);
-    pointer-events: none;
-  }
-
-  /* Pause spin on hover */
-  .globe:hover .globe__surface {
-    animation-play-state: paused;
-  }
-
-  /* ── City pin ────────────────────────────── */
-  .globe__pin {
-    position: absolute;
-    left: var(--pin-x);
-    top:  var(--pin-y);
-    transform: translate(-50%, -50%);
-    z-index: 4;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    text-decoration: none;
-  }
-
-  .globe__pin-marker {
-    position: relative;
-    width: 13px;
-    height: 13px;
-    flex-shrink: 0;
-  }
-
-  .globe__pin-dot {
-    position: absolute;
-    inset: 0;
-    background: var(--terracotta);
-    border-radius: 50%;
-    border: 2.5px solid white;
-    z-index: 2;
-  }
-
-  .globe__pin-pulse {
-    position: absolute;
-    inset: 0;
-    background: var(--terracotta);
-    border-radius: 50%;
-    animation: pin-pulse 2.4s ease-out infinite;
-    z-index: 1;
-  }
-
-  @keyframes pin-pulse {
-    0%   { transform: scale(1);   opacity: 0.75; }
-    100% { transform: scale(3.8); opacity: 0;    }
-  }
-
-  .globe__pin-label {
-    font-family: var(--font-body);
-    font-size: 0.7rem;
-    font-weight: 600;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    color: white;
-    background: rgba(43, 64, 48, 0.9);
-    padding: 3px 11px;
-    border-radius: var(--radius-full);
-    white-space: nowrap;
-    transition: background 0.2s;
-  }
-
-  .globe__pin:hover .globe__pin-label {
-    background: var(--terracotta);
+    width: clamp(300px, 58vw, 560px);
+    margin-inline: auto;
+    margin-bottom: var(--space-12);
   }
 
   /* ── Coming soon ─────────────────────────── */
@@ -293,9 +116,5 @@ const comingSoonCities = [
     flex-shrink: 0;
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .globe__surface   { animation: none; }
-    .globe__pin-pulse { animation: none; }
-    .gs               { animation: none; }
-  }
+
 </style>
