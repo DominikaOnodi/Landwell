@@ -73,12 +73,18 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
                 aria-disabled={!live ? 'true' : undefined}
                 tabindex={!live ? -1 : undefined}
               >
-                <span class="cat-card__icon" aria-hidden="true">{cat.icon}</span>
-                <span class="cat-card__label">{cat.label}</span>
-                {live
-                  ? <span class="cat-card__arrow" aria-hidden="true">→</span>
-                  : <span class="cat-card__badge">Soon</span>
-                }
+                <!-- Arch opening — icon sits here -->
+                <div class="cat-card__arch">
+                  <span class="cat-card__icon" aria-hidden="true">{cat.icon}</span>
+                </div>
+                <!-- Card body -->
+                <div class="cat-card__body">
+                  <span class="cat-card__label">{cat.label}</span>
+                  {live
+                    ? <span class="cat-card__cta">Explore <span class="cat-card__arrow" aria-hidden="true">→</span></span>
+                    : <span class="cat-card__badge">Coming soon</span>
+                  }
+                </div>
               </a>
             );
           })}
@@ -204,73 +210,108 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
 
   /* ── Category grid ─────────────────── */
   .mascot-content {
-    padding-block: var(--space-4) var(--space-20);
+    padding-block: var(--space-6) var(--space-20);
     position: relative;
     z-index: 1;
   }
 
   .categories__grid {
     display: grid;
-    grid-template-columns: 1fr;
-    gap: var(--space-3);
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-5);
   }
 
-  @media (min-width: 520px) {
-    .categories__grid { grid-template-columns: repeat(2, 1fr); }
-  }
+  @media (min-width: 640px)  { .categories__grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (min-width: 960px)  { .categories__grid { grid-template-columns: repeat(4, 1fr); } }
 
-  /* ── Category card ─────────────────── */
+  /* ── Mini arch portal cards ──────── */
   .cat-card {
     display: flex;
-    align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-5) var(--space-6);
-    background: rgba(255, 255, 255, 0.62);
-    border: 1px solid rgba(255, 255, 255, 0.5);
-    border-radius: var(--radius-xl);
+    flex-direction: column;
+    /* Arch / doorway shape — fully rounded top, soft bottom */
+    border-radius: 999px 999px var(--radius-xl) var(--radius-xl);
+    overflow: hidden;
+    background: white;
     text-decoration: none;
     color: inherit;
-    transition: background 0.22s ease, transform 0.22s ease, box-shadow 0.22s ease;
+    box-shadow: var(--shadow-md);
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
   }
 
   .cat-card--live:hover {
-    background: rgba(255, 255, 255, 0.92);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 24px rgba(61, 90, 64, 0.10);
+    transform: translateY(-10px);
+    box-shadow: var(--shadow-lg);
   }
 
-  .cat-card--live:hover .cat-card__arrow { transform: translateX(5px); }
+  .cat-card--live:hover .cat-card__arrow { transform: translateX(4px); }
 
   .cat-card--soon {
-    background: rgba(255, 255, 255, 0.28);
-    border-color: rgba(255, 255, 255, 0.22);
+    opacity: 0.55;
     cursor: default;
+    box-shadow: var(--shadow-sm);
+  }
+
+  /* Arch area — uses the zone colour so it blends into the page
+     and the white body emerges below, echoing the homepage portals */
+  .cat-card__arch {
+    background: var(--zone-bg);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-8) var(--space-4) var(--space-5);
+    min-height: 110px;
+    transition: background 0.28s ease;
+  }
+
+  .cat-card--live:hover .cat-card__arch {
+    /* Gently deepen on hover so the arch feels 'entered' */
+    filter: brightness(0.96);
   }
 
   .cat-card__icon {
-    font-size: var(--text-2xl);
+    font-size: 2.4rem;
     line-height: 1;
-    flex-shrink: 0;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.08));
+    transition: transform 0.28s ease;
+  }
+
+  .cat-card--live:hover .cat-card__icon {
+    transform: scale(1.12) translateY(-4px);
+  }
+
+  /* White card body */
+  .cat-card__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-5) var(--space-4) var(--space-6);
+    text-align: center;
+    flex: 1;
   }
 
   .cat-card__label {
     font-family: var(--font-heading);
-    font-size: var(--text-xl);
+    font-size: var(--text-lg);
     font-weight: 400;
     font-style: italic;
     color: var(--sage);
-    flex: 1;
-    line-height: 1.2;
+    line-height: 1.25;
   }
 
-  .cat-card--soon .cat-card__label {
-    color: var(--text-light);
+  .cat-card--soon .cat-card__label { color: var(--text-medium); }
+
+  .cat-card__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-1);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    color: var(--terracotta);
+    margin-top: var(--space-1);
   }
 
   .cat-card__arrow {
-    font-size: var(--text-base);
-    color: var(--terracotta);
-    flex-shrink: 0;
     display: inline-block;
     transition: transform 0.2s ease;
   }
@@ -281,13 +322,12 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
     letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-light);
-    flex-shrink: 0;
-    opacity: 0.6;
+    margin-top: var(--space-1);
   }
 
   .mascot-content__note {
     text-align: center;
-    margin-top: var(--space-10);
+    margin-top: var(--space-12);
     font-size: var(--text-sm);
     color: var(--text-light);
     letter-spacing: 0.05em;
