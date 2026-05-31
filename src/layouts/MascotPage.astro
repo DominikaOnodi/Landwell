@@ -73,11 +73,11 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
                 aria-disabled={!live ? 'true' : undefined}
                 tabindex={!live ? -1 : undefined}
               >
-                <!-- Arch opening — icon sits here -->
-                <div class="cat-card__arch">
+                <!-- Circle — icon sits inside -->
+                <div class="cat-card__circle">
                   <span class="cat-card__icon" aria-hidden="true">{cat.icon}</span>
                 </div>
-                <!-- Card body -->
+                <!-- Label + action below -->
                 <div class="cat-card__body">
                   <span class="cat-card__label">{cat.label}</span>
                   {live
@@ -98,6 +98,7 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
 
   <!-- Globe — explore other cities (decorative + interactive, at the bottom) -->
   <section class="mascot-globe section">
+    <canvas class="stars-bg" aria-hidden="true"></canvas>
     <div class="container">
       <div class="mascot-globe__header">
         <span class="eyebrow">The world is waiting ✦</span>
@@ -218,29 +219,25 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
   .categories__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: var(--space-5);
+    gap: var(--space-8);
   }
 
   @media (min-width: 640px)  { .categories__grid { grid-template-columns: repeat(3, 1fr); } }
   @media (min-width: 960px)  { .categories__grid { grid-template-columns: repeat(4, 1fr); } }
 
-  /* ── Mini arch portal cards ──────── */
+  /* ── Circle category cards ──────── */
   .cat-card {
     display: flex;
     flex-direction: column;
-    /* Arch / doorway shape — fully rounded top, soft bottom */
-    border-radius: 999px 999px var(--radius-xl) var(--radius-xl);
-    overflow: hidden;
-    background: white;
+    /* No align-items — default stretch fills the full grid cell width,
+       which is what lets the circle go square via aspect-ratio */
     text-decoration: none;
     color: inherit;
-    box-shadow: var(--shadow-md);
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    transition: transform 0.28s ease;
   }
 
   .cat-card--live:hover {
-    transform: translateY(-10px);
-    box-shadow: var(--shadow-lg);
+    transform: translateY(-8px);
   }
 
   .cat-card--live:hover .cat-card__arrow { transform: translateX(4px); }
@@ -248,24 +245,26 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
   .cat-card--soon {
     opacity: 0.55;
     cursor: default;
-    box-shadow: var(--shadow-sm);
   }
 
-  /* Arch area — uses the zone colour so it blends into the page
-     and the white body emerges below, echoing the homepage portals */
-  .cat-card__arch {
-    background: var(--zone-bg);
+  /* Circle — no explicit width, parent stretch + aspect-ratio guarantees a square */
+  .cat-card__circle {
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    background: var(--cream-dark);
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    padding: var(--space-8) var(--space-4) var(--space-5);
-    min-height: 110px;
-    transition: background 0.28s ease;
+    box-shadow: 0 4px 18px rgba(61, 90, 64, 0.16);
+    transition: box-shadow 0.28s ease;
   }
 
-  .cat-card--live:hover .cat-card__arch {
-    /* Gently deepen on hover so the arch feels 'entered' */
-    filter: brightness(0.96);
+  .cat-card--live:hover .cat-card__circle {
+    box-shadow: 0 8px 28px rgba(61, 90, 64, 0.22);
+  }
+
+  .cat-card--soon .cat-card__circle {
+    box-shadow: 0 2px 8px rgba(61, 90, 64, 0.08);
   }
 
   .cat-card__icon {
@@ -279,15 +278,14 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
     transform: scale(1.12) translateY(-4px);
   }
 
-  /* White card body */
+  /* Label + CTA below the circle */
   .cat-card__body {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: var(--space-2);
-    padding: var(--space-5) var(--space-4) var(--space-6);
+    padding-top: var(--space-3);
     text-align: center;
-    flex: 1;
   }
 
   .cat-card__label {
@@ -335,8 +333,26 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
 
   /* ── Globe (bottom section) ─────────── */
   .mascot-globe {
-    background: linear-gradient(180deg, var(--cream-dark) 0%, #1e2b20 100%);
+    background: #05090f;
     padding-bottom: var(--space-20);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Stars canvas — fills the section behind all content */
+  .stars-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* Content sits above the star field */
+  .mascot-globe > .container {
+    position: relative;
+    z-index: 1;
   }
 
   .mascot-globe__header {
@@ -344,18 +360,23 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
     margin-bottom: var(--space-10);
   }
 
+  /* Override global eyebrow colour for dark bg */
+  .mascot-globe .eyebrow {
+    color: rgba(200, 121, 65, 0.85);
+  }
+
   .mascot-globe__title {
     font-family: var(--font-heading);
     font-size: clamp(var(--text-2xl), 4vw, var(--text-4xl));
     font-weight: 400;
     font-style: italic;
-    color: var(--sage);
+    color: var(--cream);
     margin-bottom: var(--space-3);
   }
 
   .mascot-globe__hint {
     font-size: var(--text-sm);
-    color: var(--text-light);
+    color: rgba(255, 255, 255, 0.42);
   }
 
   .mascot-globe__stage {
@@ -526,3 +547,83 @@ const comingSoonCities = cities.filter(c => c.status === "coming-soon");
     margin-left: var(--space-1);
   }
 </style>
+
+<script is:inline>
+(function () {
+  var canvas = document.querySelector('.stars-bg:not([data-init])');
+  if (!canvas) return;
+  canvas.dataset.init = '1';
+
+  var section = canvas.parentElement;
+  var ctx     = canvas.getContext('2d');
+  var W = 0, H = 0;
+
+  function resize() {
+    W = section.offsetWidth  || window.innerWidth;
+    H = section.offsetHeight || 600;
+    canvas.width  = W;
+    canvas.height = H;
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  /* ── Star data ────────────────────────────────────── */
+  var COLS  = ['255,255,255', '200,220,255', '255,248,210', '180,210,255'];
+  var COUNT = 240;
+  var stars = [];
+  for (var i = 0; i < COUNT; i++) {
+    stars.push({
+      x:     Math.random(),
+      y:     Math.random(),
+      r:     Math.pow(Math.random(), 2.5) * 2.4 + 0.25,  // biased toward tiny
+      base:  Math.random() * 0.50 + 0.20,
+      amp:   Math.random() * 0.50 + 0.10,
+      speed: Math.random() * 1.4  + 0.15,
+      phase: Math.random() * Math.PI * 2,
+      col:   COLS[Math.floor(Math.random() * COLS.length)],
+    });
+  }
+
+  /* ── Nebula patches (subtle, drawn once per resize) ─ */
+  var nebulae = [
+    { x: 0.12, y: 0.18, r: 0.30, col: '70,35,130',  op: 0.055 },
+    { x: 0.85, y: 0.72, r: 0.28, col: '20,55,130',  op: 0.065 },
+    { x: 0.50, y: 0.08, r: 0.22, col: '35,70,150',  op: 0.040 },
+    { x: 0.78, y: 0.25, r: 0.18, col: '60,20,100',  op: 0.035 },
+  ];
+
+  function drawNebulae() {
+    for (var i = 0; i < nebulae.length; i++) {
+      var n = nebulae[i];
+      var cx = n.x * W, cy = n.y * H, rad = n.r * Math.min(W, H);
+      var g  = ctx.createRadialGradient(cx, cy, 0, cx, cy, rad);
+      g.addColorStop(0, 'rgba(' + n.col + ',' + n.op + ')');
+      g.addColorStop(1, 'rgba(' + n.col + ',0)');
+      ctx.fillStyle = g;
+      ctx.beginPath();
+      ctx.arc(cx, cy, rad, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  /* ── Animation loop ───────────────────────────────── */
+  function draw(t) {
+    ctx.clearRect(0, 0, W, H);
+    drawNebulae();
+
+    for (var i = 0; i < stars.length; i++) {
+      var s  = stars[i];
+      var op = s.base + Math.sin(t * s.speed + s.phase) * s.amp;
+      op = op < 0.03 ? 0.03 : op > 1 ? 1 : op;
+      ctx.beginPath();
+      ctx.arc(s.x * W, s.y * H, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + s.col + ',' + op.toFixed(2) + ')';
+      ctx.fill();
+    }
+
+    requestAnimationFrame(function (ms) { draw(ms * 0.001); });
+  }
+
+  requestAnimationFrame(function (ms) { draw(ms * 0.001); });
+})();
+</script>

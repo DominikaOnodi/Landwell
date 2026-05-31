@@ -160,13 +160,18 @@ All mascots are **round, soft, expressive illustrated potato characters**. Same 
 - Guide header redesigned — title smaller (max 30px), mascot smaller + softer, gradient fade from header colour into cream body — session 5
 - Deployed to Netlify — site is live, auto-deploys on every GitHub push — session 5
 
+### Completed (session 6)
+- Globe locks on selected city — rotation stops permanently while a city is zoomed; clears when "← Back to globe" is clicked — session 6
+- Newsletter wired to Netlify Forms — `data-netlify="true"` added; submissions appear in Netlify dashboard under Forms; AJAX submit so page doesn't reload — session 6
+- Category cards redesigned from arch to full circles — semi-transparent white circles pick up zone-bg tint per mascot (sage/terracotta/mint) — session 6
+- Connector page bg fixed — changed from `--cream-dark` to `--mint-pale` to match Dubai connector and the session 4 design decision — session 6
+
 ### In Progress
-*(nothing — clean end to session 5)*
+*(nothing — clean end to session 6)*
 
 ### Next Up — Priority Order
 
 **Quick wins (next session):**
-- Newsletter signup section on homepage — placeholder form, warm design, no back-end needed yet
 - /explorer/markets page — content, same format as /explorer/cafes
 - Fix the interactive globe — now that the site is deployed, test if the D3 CDN approach works on the live URL; if not, investigate why and try a simpler WebGL fallback
 

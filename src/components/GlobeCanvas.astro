@@ -135,8 +135,9 @@ const { navigatable = true } = Astro.props;
   /* ── Drawing ────────────────────────────────────────────── */
   function drawOcean() {
     var g = ctx.createRadialGradient(CX * 0.72, CY * 0.72, 0, CX, CY, scale);
-    g.addColorStop(0, '#1e3826');
-    g.addColorStop(1, '#0a180e');
+    g.addColorStop(0,    '#1e5490');
+    g.addColorStop(0.55, '#0d2f62');
+    g.addColorStop(1,    '#061428');
     ctx.beginPath();
     ctx.arc(CX, CY, scale, 0, Math.PI * 2);
     ctx.fillStyle = g;
@@ -164,18 +165,29 @@ const { navigatable = true } = Astro.props;
   }
 
   function drawGlow() {
-    var g = ctx.createRadialGradient(CX, CY, scale - 2, CX, CY, scale + 36);
-    g.addColorStop(0,   'rgba(200,121,65,0.28)');
-    g.addColorStop(1,   'rgba(200,121,65,0)');
+    var g = ctx.createRadialGradient(CX, CY, scale - 2, CX, CY, scale + 40);
+    g.addColorStop(0,   'rgba(100,160,255,0.20)');
+    g.addColorStop(1,   'rgba(60,110,255,0)');
     ctx.beginPath();
-    ctx.arc(CX, CY, scale + 36, 0, Math.PI * 2);
+    ctx.arc(CX, CY, scale + 40, 0, Math.PI * 2);
+    ctx.fillStyle = g;
+    ctx.fill();
+  }
+
+  function drawAtmosphere() {
+    var g = ctx.createRadialGradient(CX, CY, scale * 0.94, CX, CY, scale + 58);
+    g.addColorStop(0,    'rgba(110,175,255,0.30)');
+    g.addColorStop(0.40, 'rgba(80,145,255,0.13)');
+    g.addColorStop(1,    'rgba(50,100,255,0)');
+    ctx.beginPath();
+    ctx.arc(CX, CY, scale + 58, 0, Math.PI * 2);
     ctx.fillStyle = g;
     ctx.fill();
   }
 
   function drawGraticule() {
     ctx.beginPath();
-    ctx.strokeStyle = 'rgba(255,255,255,0.07)';
+    ctx.strokeStyle = 'rgba(180,215,255,0.07)';
     ctx.lineWidth   = 0.5;
     var pt, first;
 
@@ -225,17 +237,17 @@ const { navigatable = true } = Astro.props;
       if (!hasVis) continue;
 
       if (isZoom) {
-        ctx.fillStyle   = '#c87941';   // terracotta highlight when zoomed
+        ctx.fillStyle   = '#c87941';
         ctx.strokeStyle = '#9a5c2a';
       } else if (isHov) {
-        ctx.fillStyle   = '#5a7e5d';   // brighter green on hover
-        ctx.strokeStyle = '#3d5a40';
+        ctx.fillStyle   = '#6aaa4a';
+        ctx.strokeStyle = '#4a7a30';
       } else if (isAct) {
-        ctx.fillStyle   = '#3e5e42';
-        ctx.strokeStyle = '#29402c';
+        ctx.fillStyle   = '#4e8a3c';
+        ctx.strokeStyle = '#325a26';
       } else {
-        ctx.fillStyle   = '#243529';
-        ctx.strokeStyle = '#192a1e';
+        ctx.fillStyle   = '#3a6830';
+        ctx.strokeStyle = '#264820';
       }
       ctx.lineWidth = 0.4;
       ctx.fill('evenodd');
@@ -323,9 +335,6 @@ const { navigatable = true } = Astro.props;
   function render() {
     ctx.clearRect(0, 0, SIZE, SIZE);
 
-    drawGlow();
-
-    // Clip all land drawing to the sphere circle
     ctx.save();
     ctx.beginPath();
     ctx.arc(CX, CY, scale, 0, Math.PI * 2);
@@ -335,10 +344,12 @@ const { navigatable = true } = Astro.props;
     drawGraticule();
     drawCountries(countries);
 
-    ctx.restore();      // remove clip
+    ctx.restore();
 
-    drawLighting();     // lighting overlay (outside clip so it covers edge)
-    drawMarkers();      // markers on top of everything
+    drawLighting();     // specular highlight + shadow on globe surface
+    drawAtmosphere();   // blue rim glow just outside the sphere
+    drawGlow();         // wider outer radiance
+    drawMarkers();
   }
 
   /* ── Animation loop ─────────────────────────────────────── */
@@ -504,8 +515,8 @@ const { navigatable = true } = Astro.props;
     display: block;
     border-radius: 50%;
     filter:
-      drop-shadow(0 0 40px rgba(200, 121, 65, 0.3))
-      drop-shadow(0 24px 64px rgba(0, 0, 0, 0.5));
+      drop-shadow(0 0 52px rgba(100, 160, 255, 0.40))
+      drop-shadow(0 24px 64px rgba(0, 0, 0, 0.65));
   }
 
   /* ── City card ───────────────────────────── */
