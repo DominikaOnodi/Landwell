@@ -166,14 +166,24 @@ All mascots are **round, soft, expressive illustrated potato characters**. Same 
 - Category cards redesigned from arch to full circles — semi-transparent white circles pick up zone-bg tint per mascot (sage/terracotta/mint) — session 6
 - Connector page bg fixed — changed from `--cream-dark` to `--mint-pale` to match Dubai connector and the session 4 design decision — session 6
 
+### Completed (session 7)
+- Circle cards fixed properly — removed `align-items: center` from card wrapper (was causing oval/arch shape); now uses flex default stretch + `aspect-ratio: 1/1` for guaranteed perfect circles — session 7
+- Circle cards darkened — background changed from semi-transparent white to `var(--cream-dark)` so they stand out against pale zone backgrounds — session 7
+- Circle card spacing increased — grid gap raised from space-5 to space-8 across all mascot pages — session 7
+- Dubai city page category cards converted to same circle style — HTML restructured with `.start-card__circle` + `.start-card__body`, CSS matches mascot pages — session 7
+- Globe redesigned as Earth — blue ocean, green land, blue atmospheric rim glow, wider outer radiance; all from Canvas — session 7
+- Night sky background added to globe section (mascot pages) — 240 twinkling stars, 4 subtle nebula patches, deep space `#05090f` background — session 7
+- Night sky background applied to homepage globe section (MapSection) — same star field; text/card colours updated for dark background — session 7
+- All session 7 changes committed and pushed; Netlify deployed — session 7
+
 ### In Progress
-*(nothing — clean end to session 6)*
+*(nothing — clean end to session 7)*
 
 ### Next Up — Priority Order
 
-**Quick wins (next session):**
-- /explorer/markets page — content, same format as /explorer/cafes
-- Fix the interactive globe — now that the site is deployed, test if the D3 CDN approach works on the live URL; if not, investigate why and try a simpler WebGL fallback
+**Start of next session (confirmed):**
+- Make category circle bubbles smaller — currently fill the full grid cell width, should be more compact
+- Build the Connector section content — /connector has no guides yet; start with first category page (Events & Meetups or Language Exchange)
 
 **Content to write:**
 - Dubai Explorer guides: neighbourhoods, cafés/brunch, desert & outdoors
