@@ -1,0 +1,197 @@
+---
+// NewsletterSection.astro — email signup placeholder
+// No back-end yet — form is styled and ready, submit shows a thank-you note.
+// Wire to Mailchimp / ConvertKit / Resend when ready.
+---
+
+<section id="join" class="nl-section section">
+  <span class="nl-sp nl-sp--1" aria-hidden="true">✦</span>
+  <span class="nl-sp nl-sp--2" aria-hidden="true">✦</span>
+
+  <div class="container">
+    <div class="nl-inner">
+
+      <div class="nl-text">
+        <span class="eyebrow">Stay in the loop ✦</span>
+        <h2 class="nl-title">Be the first to know.</h2>
+        <p class="nl-sub">
+          New cities, new guides, new community — straight to your inbox.
+          No spam. Unsubscribe any time.
+        </p>
+      </div>
+
+      <form class="nl-form" id="nl-form" novalidate>
+        <div class="nl-fields">
+          <input
+            class="nl-input"
+            type="email"
+            id="nl-email"
+            name="email"
+            placeholder="Your email address"
+            autocomplete="email"
+            required
+            aria-label="Email address"
+          />
+          <button class="nl-btn" type="submit">Join Landwell</button>
+        </div>
+        <p class="nl-error" id="nl-error" role="alert" aria-live="polite"></p>
+      </form>
+
+      <p class="nl-thanks" id="nl-thanks" aria-live="polite"></p>
+
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+(function () {
+  var form   = document.getElementById('nl-form');
+  var input  = document.getElementById('nl-email');
+  var errEl  = document.getElementById('nl-error');
+  var thanks = document.getElementById('nl-thanks');
+
+  if (!form) return;
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    errEl.textContent = '';
+
+    var email = input.value.trim();
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      errEl.textContent = 'Please enter a valid email address.';
+      input.focus();
+      return;
+    }
+
+    // Placeholder — swap for real API call when newsletter is wired up
+    form.style.display  = 'none';
+    thanks.textContent  = '♥ You\'re on the list — we\'ll be in touch soon.';
+  });
+})();
+</script>
+
+<style>
+  .nl-section {
+    background: var(--sage);
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Sparkles */
+  .nl-sp {
+    position: absolute;
+    color: var(--terracotta-light);
+    pointer-events: none;
+    user-select: none;
+    opacity: 0.2;
+    animation: nl-float 5s ease-in-out infinite;
+  }
+  .nl-sp--1 { top: 14%;    left:  5%;  font-size: 1.1rem;  animation-delay: 0s;   }
+  .nl-sp--2 { bottom: 18%; right: 6%;  font-size: 0.8rem;  animation-delay: 2.2s; }
+
+  @keyframes nl-float {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50%       { transform: translateY(-8px) rotate(18deg); }
+  }
+
+  /* Inner layout */
+  .nl-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-10);
+    text-align: center;
+  }
+
+  /* Text */
+  .nl-title {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-3xl), 5vw, var(--text-5xl));
+    font-weight: 400;
+    font-style: italic;
+    color: white;
+    line-height: 1.1;
+    margin-bottom: var(--space-4);
+  }
+
+  .nl-sub {
+    font-size: var(--text-base);
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.7;
+    max-width: 42ch;
+    margin-inline: auto;
+    max-width: none;
+  }
+
+  /* eyebrow override for dark bg */
+  .nl-section .eyebrow {
+    color: var(--terracotta-light);
+    opacity: 0.9;
+  }
+
+  /* Form */
+  .nl-form { width: 100%; max-width: 480px; }
+
+  .nl-fields {
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .nl-input {
+    flex: 1;
+    min-width: 220px;
+    padding: var(--space-4) var(--space-5);
+    border-radius: var(--radius-full);
+    border: none;
+    background: rgba(255, 255, 255, 0.12);
+    color: white;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    outline: none;
+    transition: background 0.2s;
+  }
+
+  .nl-input::placeholder { color: rgba(255, 255, 255, 0.45); }
+
+  .nl-input:focus {
+    background: rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+  }
+
+  .nl-btn {
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-full);
+    border: none;
+    background: var(--terracotta);
+    color: white;
+    font-family: var(--font-body);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .nl-btn:hover { background: #b56934; transform: translateY(-2px); }
+
+  .nl-error {
+    margin-top: var(--space-3);
+    font-size: var(--text-sm);
+    color: var(--terracotta-light);
+    min-height: 1.2em;
+  }
+
+  .nl-thanks {
+    font-family: var(--font-heading);
+    font-size: var(--text-2xl);
+    font-style: italic;
+    color: rgba(255, 255, 255, 0.85);
+    min-height: 1.5em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nl-sp { animation: none; }
+  }
+</style>
