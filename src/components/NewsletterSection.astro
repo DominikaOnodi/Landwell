@@ -1,7 +1,7 @@
 ---
-// NewsletterSection.astro — email signup placeholder
-// No back-end yet — form is styled and ready, submit shows a thank-you note.
-// Wire to Mailchimp / ConvertKit / Resend when ready.
+// NewsletterSection.astro — email signup
+// Uses Netlify Forms — no backend needed, submissions arrive in Netlify dashboard.
+// To receive email notifications: Netlify dashboard → Site → Forms → newsletter → Add notification.
 ---
 
 <section id="join" class="nl-section section">
@@ -20,7 +20,20 @@
         </p>
       </div>
 
-      <form class="nl-form" id="nl-form" novalidate>
+      <!-- data-netlify="true" tells Netlify to capture this form at deploy time -->
+      <form
+        class="nl-form"
+        id="nl-form"
+        name="newsletter"
+        method="POST"
+        data-netlify="true"
+        data-netlify-honeypot="bot-field"
+        novalidate
+      >
+        <!-- Required hidden fields for Netlify Forms -->
+        <input type="hidden" name="form-name" value="newsletter" />
+        <p style="display:none"><label>Don't fill this out: <input name="bot-field" /></label></p>
+
         <div class="nl-fields">
           <input
             class="nl-input"
@@ -63,9 +76,22 @@
       return;
     }
 
-    // Placeholder — swap for real API call when newsletter is wired up
-    form.style.display  = 'none';
-    thanks.textContent  = '♥ You\'re on the list — we\'ll be in touch soon.';
+    // Submit to Netlify Forms via AJAX (no page reload)
+    fetch('/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: new URLSearchParams({
+        'form-name': 'newsletter',
+        'email':     email,
+      }).toString(),
+    })
+    .then(function () {
+      form.style.display = 'none';
+      thanks.textContent = '♥ You\'re on the list — we\'ll be in touch soon.';
+    })
+    .catch(function () {
+      errEl.textContent = 'Something went wrong — please try again or email headoffice@landwell.co';
+    });
   });
 })();
 </script>

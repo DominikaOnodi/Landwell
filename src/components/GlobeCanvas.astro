@@ -343,7 +343,7 @@ const { navigatable = true } = Astro.props;
 
   /* ── Animation loop ─────────────────────────────────────── */
   (function loop() {
-    if (spinning && !dragging && !animating && Date.now() - idleAt > 2500) {
+    if (spinning && !dragging && !animating && !zoomedCity && Date.now() - idleAt > 2500) {
       rotLon += 0.08;
     }
     render();
