@@ -45,16 +45,18 @@ const { navigatable = true } = Astro.props;
   const CX = SIZE / 2;
   const CY = SIZE / 2;
   const BASE_SC = SIZE * 0.46;
-  const ZOOM_SC = SIZE * 0.77;
+  const ZOOM_SC = SIZE * 0.90;   // aggressive zoom so the city fills the globe
 
   /* ── Globe state ────────────────────────────────────────── */
   let scale    = BASE_SC;
   let rotLon   = -20;    // longitude rotation (degrees) — starts on Europe
   let rotLat   = -25;    // latitude tilt      (degrees)
-  let spinning  = true;
-  let dragging  = false;
-  let animating = false;
-  let idleAt    = Date.now();
+  let spinning      = true;
+  let dragging      = false;
+  let animating     = false;
+  let idleAt        = Date.now();
+  let hoveredCity   = 0;   // id of city mouse is near (or 0)
+  let zoomedCity    = 0;   // id of city currently zoomed into (or 0)
 
   /* ── City data (ISO-3166 numeric IDs) ───────────────────── */
   const CITIES = {
@@ -196,16 +198,15 @@ const { navigatable = true } = Astro.props;
     ctx.stroke();
   }
 
-  var activeCountryPaths = {};   // id → Path2D (rebuilt each frame)
-
   function drawCountries(list) {
-    activeCountryPaths = {};
     for (var ci = 0; ci < list.length; ci++) {
-      var c       = list[ci];
-      var isAct   = Boolean(CITIES[c.id]);
-      var path    = new Path2D();
-      var hasVis  = false;
+      var c      = list[ci];
+      var isAct  = Boolean(CITIES[c.id]);
+      var isZoom = (c.id === zoomedCity);
+      var isHov  = (c.id === hoveredCity) && !zoomedCity;
+      var hasVis = false;
 
+      ctx.beginPath();
       for (var pi = 0; pi < c.polys.length; pi++) {
         var poly = c.polys[pi];
         for (var ri = 0; ri < poly.length; ri++) {
@@ -214,48 +215,105 @@ const { navigatable = true } = Astro.props;
           for (var vi = 0; vi < ring.length; vi++) {
             var pt = project(ring[vi][0], ring[vi][1]);
             if (pt) {
-              first ? path.moveTo(pt[0], pt[1]) : path.lineTo(pt[0], pt[1]);
+              first ? ctx.moveTo(pt[0], pt[1]) : ctx.lineTo(pt[0], pt[1]);
               first  = false;
               hasVis = true;
             } else { first = true; }
           }
         }
       }
-
       if (!hasVis) continue;
 
-      ctx.fillStyle   = isAct ? '#3e5e42' : '#243529';
-      ctx.strokeStyle = isAct ? '#29402c' : '#192a1e';
-      ctx.lineWidth   = 0.4;
-      ctx.fill(path, 'evenodd');
-      ctx.stroke(path);
-
-      if (isAct) activeCountryPaths[c.id] = path;
+      if (isZoom) {
+        ctx.fillStyle   = '#c87941';   // terracotta highlight when zoomed
+        ctx.strokeStyle = '#9a5c2a';
+      } else if (isHov) {
+        ctx.fillStyle   = '#5a7e5d';   // brighter green on hover
+        ctx.strokeStyle = '#3d5a40';
+      } else if (isAct) {
+        ctx.fillStyle   = '#3e5e42';
+        ctx.strokeStyle = '#29402c';
+      } else {
+        ctx.fillStyle   = '#243529';
+        ctx.strokeStyle = '#192a1e';
+      }
+      ctx.lineWidth = 0.4;
+      ctx.fill('evenodd');
+      ctx.stroke();
     }
   }
 
   function drawMarkers() {
-    var t = (Date.now() % 2400) / 2400;
-    var ids = Object.keys(CITIES);
+    var t    = (Date.now() % 2400) / 2400;
+    var ids  = Object.keys(CITIES);
+
     for (var i = 0; i < ids.length; i++) {
-      var city = CITIES[ids[i]];
+      var id   = Number(ids[i]);
+      var city = CITIES[id];
       var pt   = project(city.lon, city.lat);
       if (!pt) continue;
 
+      var isZoom = (id === zoomedCity);
+      var isHov  = (id === hoveredCity) && !zoomedCity;
+      var dotR   = isZoom ? 9 : (isHov ? 7.5 : 5.5);
+
+      // Hover / zoom ring
+      if (isHov || isZoom) {
+        ctx.beginPath();
+        ctx.arc(pt[0], pt[1], dotR + 14, 0, Math.PI * 2);
+        ctx.strokeStyle = isZoom ? 'rgba(200,121,65,0.7)' : 'rgba(255,255,255,0.45)';
+        ctx.lineWidth   = isZoom ? 2.5 : 1.5;
+        ctx.stroke();
+      }
+
       // Pulse ring
       ctx.beginPath();
-      ctx.arc(pt[0], pt[1], 5 + t * 11, 0, Math.PI * 2);
+      ctx.arc(pt[0], pt[1], dotR + t * 12, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(200,121,65,' + (0.65 * (1 - t)) + ')';
       ctx.fill();
 
       // Solid dot
       ctx.beginPath();
-      ctx.arc(pt[0], pt[1], 5.5, 0, Math.PI * 2);
+      ctx.arc(pt[0], pt[1], dotR, 0, Math.PI * 2);
       ctx.fillStyle   = '#c87941';
       ctx.fill();
       ctx.strokeStyle = 'white';
-      ctx.lineWidth   = 1.5;
+      ctx.lineWidth   = isZoom ? 2.5 : 1.5;
       ctx.stroke();
+
+      // City name label — only when zoomed
+      if (isZoom) {
+        var label = city.name;
+        ctx.font      = '600 14px DM Sans, sans-serif';
+        ctx.textAlign = 'left';
+        var tw  = ctx.measureText(label).width;
+        var lx  = pt[0] + dotR + 10;
+        var ly  = pt[1];
+        var pw  = tw + 20;
+        var ph  = 26;
+        var pr  = 13;
+        // Pill background
+        ctx.fillStyle = 'rgba(30,52,36,0.92)';
+        ctx.beginPath();
+        ctx.moveTo(lx + pr,       ly - ph/2);
+        ctx.lineTo(lx + pw - pr,  ly - ph/2);
+        ctx.arcTo( lx + pw,       ly - ph/2, lx + pw,       ly - ph/2 + pr, pr);
+        ctx.lineTo(lx + pw,       ly + ph/2 - pr);
+        ctx.arcTo( lx + pw,       ly + ph/2, lx + pw - pr,  ly + ph/2,      pr);
+        ctx.lineTo(lx + pr,       ly + ph/2);
+        ctx.arcTo( lx,            ly + ph/2, lx,             ly + ph/2 - pr, pr);
+        ctx.lineTo(lx,            ly - ph/2 + pr);
+        ctx.arcTo( lx,            ly - ph/2, lx + pr,        ly - ph/2,      pr);
+        ctx.closePath();
+        ctx.fill();
+        // Label text
+        ctx.fillStyle = 'white';
+        ctx.fillText(label, lx + 10, ly + 5);
+        // Tap hint
+        ctx.font      = '400 11px DM Sans, sans-serif';
+        ctx.fillStyle = 'rgba(255,255,255,0.55)';
+        ctx.fillText('tap to explore →', lx + 10, ly + 21);
+      }
     }
   }
 
@@ -315,11 +373,20 @@ const { navigatable = true } = Astro.props;
   }
 
   CANVAS.addEventListener('mousedown', function(e) {
-    if (CAN_NAV && hitTestCountry(e)) return;
+    if (CAN_NAV && nearestCity(e)) return;   // clicking a city → don't drag
     startDrag(e.clientX, e.clientY);
   });
-  window.addEventListener('mousemove', function(e) { moveDrag(e.clientX, e.clientY); });
-  window.addEventListener('mouseup',   function()   { if (dragging) endDrag(); });
+
+  window.addEventListener('mousemove', function(e) {
+    moveDrag(e.clientX, e.clientY);
+    if (!dragging && !animating && CAN_NAV) {
+      var id = nearestCity(e);
+      hoveredCity = id;
+      CANVAS.style.cursor = id ? 'pointer' : 'grab';
+    }
+  });
+
+  window.addEventListener('mouseup', function() { if (dragging) endDrag(); });
 
   CANVAS.addEventListener('touchstart', function(e) {
     startDrag(e.touches[0].clientX, e.touches[0].clientY);
@@ -329,7 +396,7 @@ const { navigatable = true } = Astro.props;
   }, { passive: true });
   CANVAS.addEventListener('touchend', function() { endDrag(); }, { passive: true });
 
-  /* ── Click / hit-test ───────────────────────────────────── */
+  /* ── Click detection — proximity only (reliable everywhere) ─ */
   function getLogical(e) {
     var r = CANVAS.getBoundingClientRect();
     return [
@@ -338,32 +405,27 @@ const { navigatable = true } = Astro.props;
     ];
   }
 
-  function hitTestCountry(e) {
-    var lp  = getLogical(e);
-    var lx  = lp[0], ly = lp[1];
-    var ids = Object.keys(activeCountryPaths);
+  // Returns the city id nearest to the pointer if within 72px, else 0
+  function nearestCity(e) {
+    if (!CAN_NAV) return 0;
+    var lp   = getLogical(e);
+    var ids  = Object.keys(CITIES);
+    var best = 0, bestD = Infinity;
     for (var i = 0; i < ids.length; i++) {
-      if (ctx.isPointInPath(activeCountryPaths[ids[i]], lx, ly, 'evenodd')) return Number(ids[i]);
+      var id   = Number(ids[i]);
+      var city = CITIES[id];
+      var pt   = project(city.lon, city.lat);
+      if (!pt) continue;
+      var d = Math.hypot(lp[0] - pt[0], lp[1] - pt[1]);
+      if (d < bestD) { bestD = d; best = id; }
     }
-    return 0;
+    return bestD < 72 ? best : 0;
   }
 
   CANVAS.addEventListener('click', function(e) {
     if (!CAN_NAV || dragging || animating) return;
-
-    // 1. Country shape click
-    var countryId = hitTestCountry(e);
-    if (countryId && CITIES[countryId]) { selectCity(countryId); return; }
-
-    // 2. Near a city marker (30px radius)
-    var lp = getLogical(e);
-    var ids = Object.keys(CITIES);
-    for (var i = 0; i < ids.length; i++) {
-      var city = CITIES[ids[i]];
-      var pt   = project(city.lon, city.lat);
-      if (!pt) continue;
-      if (Math.hypot(lp[0] - pt[0], lp[1] - pt[1]) < 30) { selectCity(Number(ids[i])); return; }
-    }
+    var id = nearestCity(e);
+    if (id) selectCity(id);
   });
 
   /* ── Smooth animate (rotation + zoom) ──────────────────── */
@@ -391,7 +453,9 @@ const { navigatable = true } = Astro.props;
     if (animating) return;
     var city = CITIES[id];
     if (!city) return;
-    spinning = false;
+    spinning    = false;
+    hoveredCity = 0;
+    zoomedCity  = id;
     animateTo(-city.lon, -city.lat, ZOOM_SC, 950, function() { showCard(city); });
   }
 
@@ -407,6 +471,7 @@ const { navigatable = true } = Astro.props;
 
     CARD_SLOT.querySelector('.gvc-back').addEventListener('click', function() {
       CARD_SLOT.innerHTML = '';
+      zoomedCity = 0;
       animateTo(-20, -25, BASE_SC, 750, function() {
         setTimeout(function() { spinning = true; }, 1200);
       });

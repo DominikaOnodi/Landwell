@@ -43,20 +43,36 @@ const portals = [
   <div class="container">
 
     <div class="portals__header">
-      <div class="portals__brand">
-        <div class="portals__icon" aria-hidden="true">
-          <svg width="36" height="44" viewBox="0 0 76 92" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="38" cy="46" r="24" fill="#C87941" fill-opacity="0.16"/>
-            <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84" stroke="#3D5A40" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84 Z" fill="#3D5A40" fill-opacity="0.05"/>
-            <path d="M22 84 L22 46 C22 30 28 22 38 22 C48 22 54 30 54 46 L54 84" stroke="#3D5A40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
-            <line x1="4" y1="84" x2="72" y2="84" stroke="#3D5A40" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
-            <path d="M4 84 Q38 68 72 84" stroke="#3D5A40" stroke-width="1.5" fill="none" opacity="0.3"/>
-            <path d="M38 84 L38 80 M35 78 Q38 72 41 78" stroke="#C87941" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
-          </svg>
-        </div>
-        <p class="portals__tagline">A borderless community for people building life abroad.</p>
+
+      <!-- Arch icon -->
+      <div class="portals__icon" aria-hidden="true">
+        <svg width="40" height="48" viewBox="0 0 76 92" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="38" cy="46" r="24" fill="#C87941" fill-opacity="0.16"/>
+          <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84" stroke="#3D5A40" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M12 84 L12 42 C12 20 22 8 38 8 C54 8 64 20 64 42 L64 84 Z" fill="#3D5A40" fill-opacity="0.05"/>
+          <path d="M22 84 L22 46 C22 30 28 22 38 22 C48 22 54 30 54 46 L54 84" stroke="#3D5A40" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.4"/>
+          <line x1="4" y1="84" x2="72" y2="84" stroke="#3D5A40" stroke-width="2" stroke-linecap="round" opacity="0.5"/>
+          <path d="M4 84 Q38 68 72 84" stroke="#3D5A40" stroke-width="1.5" fill="none" opacity="0.3"/>
+          <path d="M38 84 L38 80 M35 78 Q38 72 41 78" stroke="#C87941" stroke-width="1.5" stroke-linecap="round" opacity="0.7"/>
+        </svg>
       </div>
+
+      <!-- Brand name -->
+      <p class="portals__wordmark">Landwell</p>
+
+      <!-- Main headline -->
+      <h1 class="portals__headline">
+        Your relocation companion,<br>
+        from visa to feeling at home.
+      </h1>
+
+      <!-- One-line explanation -->
+      <p class="portals__sub">
+        Practical guides, honest city advice, and a community of people
+        who've navigated exactly what you're about to face.
+        Pick where you're headed — or dreaming of going.
+      </p>
+
     </div>
 
     <div class="portals__grid">
@@ -122,21 +138,45 @@ const portals = [
 
   .portals__header {
     text-align: center;
-    margin-bottom: var(--space-8);
-  }
-
-  .portals__brand {
-    display: inline-flex;
+    margin-bottom: var(--space-16);
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: var(--space-3);
-    justify-content: center;
+    gap: var(--space-5);
   }
 
   .portals__icon {
     opacity: 0.85;
-    flex-shrink: 0;
   }
 
+  .portals__wordmark {
+    font-family: var(--font-heading);
+    font-size: var(--text-sm);
+    font-weight: 500;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--terracotta);
+    opacity: 0.75;
+  }
+
+  .portals__headline {
+    font-family: var(--font-heading);
+    font-size: clamp(var(--text-3xl), 5.5vw, var(--text-5xl));
+    font-weight: 400;
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1.2;
+    max-width: 18ch;
+  }
+
+  .portals__sub {
+    font-size: clamp(var(--text-sm), 1.5vw, var(--text-base));
+    color: var(--text-medium);
+    line-height: 1.75;
+    max-width: 52ch;
+  }
+
+  /* keep tagline style in case used elsewhere */
   .portals__tagline {
     font-family: var(--font-body);
     font-size: var(--text-sm);

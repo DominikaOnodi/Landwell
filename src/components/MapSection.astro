@@ -1,6 +1,11 @@
 ---
 import GlobeCanvas from './GlobeCanvas.astro';
 
+const activeCities = [
+  { name: "London", country: "United Kingdom", flag: "🇬🇧", href: "/london" },
+  { name: "Dubai",  country: "United Arab Emirates", flag: "🇦🇪", href: "/dubai"  },
+];
+
 const comingSoonCities = [
   { name: "Lisbon"    },
   { name: "Amsterdam" },
@@ -21,6 +26,24 @@ const comingSoonCities = [
 
     <div class="globe-stage">
       <GlobeCanvas navigatable={true} />
+    </div>
+
+    <!-- Live city cards — always visible, globe-independent -->
+    <div class="city-row">
+      <p class="city-row__label">Explore now ✦</p>
+      <div class="city-row__cards">
+        {activeCities.map((city) => (
+          <a href={city.href} class="city-card">
+            <span class="city-card__flag">{city.flag}</span>
+            <span class="city-card__dot" aria-hidden="true"></span>
+            <span class="city-card__text">
+              <span class="city-card__name">{city.name}</span>
+              <span class="city-card__country">{city.country}</span>
+            </span>
+            <span class="city-card__arrow">→</span>
+          </a>
+        ))}
+      </div>
     </div>
 
     <!-- Coming soon chips -->
@@ -74,6 +97,93 @@ const comingSoonCities = [
     width: clamp(300px, 58vw, 560px);
     margin-inline: auto;
     margin-bottom: var(--space-12);
+  }
+
+  /* ── Live city cards ────────────────────── */
+  .city-row {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .city-row__label {
+    font-size: var(--text-xs);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    margin-bottom: var(--space-5);
+  }
+
+  .city-row__cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+  }
+
+  .city-card {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    background: var(--white);
+    border-radius: var(--radius-full);
+    box-shadow: var(--shadow-md);
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.22s ease, box-shadow 0.22s ease, background 0.22s;
+  }
+
+  .city-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--shadow-lg);
+    background: var(--sage);
+  }
+
+  .city-card:hover .city-card__name    { color: white; }
+  .city-card:hover .city-card__country { color: rgba(255,255,255,0.6); }
+  .city-card:hover .city-card__dot     { background: var(--terracotta-light); }
+  .city-card:hover .city-card__arrow   { color: var(--terracotta-light); transform: translateX(4px); }
+
+  .city-card__flag { font-size: var(--text-xl); line-height: 1; }
+
+  .city-card__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--terracotta);
+    flex-shrink: 0;
+  }
+
+  .city-card__text {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .city-card__name {
+    font-family: var(--font-heading);
+    font-size: var(--text-xl);
+    font-style: italic;
+    color: var(--sage);
+    line-height: 1;
+    transition: color 0.22s;
+  }
+
+  .city-card__country {
+    font-size: var(--text-xs);
+    color: var(--text-light);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    transition: color 0.22s;
+  }
+
+  .city-card__arrow {
+    font-size: var(--text-sm);
+    color: var(--terracotta);
+    margin-left: var(--space-1);
+    display: inline-block;
+    transition: transform 0.2s, color 0.22s;
   }
 
   /* ── Coming soon ─────────────────────────── */
